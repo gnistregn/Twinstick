@@ -2,9 +2,9 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
     <asset>
         <contributor>
-            <authoring_tool>modo 701 [Build 59358], Mac OS X 10.8.2 (10.8.2)</authoring_tool>
+            <authoring_tool>modo 701 [Build 58358], Mac OS X 10.8.4 (10.8.4)</authoring_tool>
             <comments>
-                Plug-in: [Build 59358];
+                Plug-in: [Build 58358];
                 Use Absolute Path: No;
                 Merge Reference Items: No;
                 Save Hidden Items: Yes;
@@ -27,10 +27,10 @@
                 Save 3ds Max Profile: Yes;
                 Formatted Arrays: Yes;
             </comments>
-            <source_data>file:///Users/Thomas/Dropbox/Projects/Twinstick/3D/Twinstick%20Assets/Scenes/Environment.lxo</source_data>
+            <source_data>file:///Volumes/Freeside/Dropbox/Projects/Twinstick%20Project/3D/Twinstick%20Assets/Scenes/Environment.lxo</source_data>
         </contributor>
-        <created>2013-08-14T15:38:49Z</created>
-        <modified>2013-08-14T15:38:49Z</modified>
+        <created>2013-08-17T22:59:39Z</created>
+        <modified>2013-08-17T22:59:39Z</modified>
         <up_axis>Y_UP</up_axis>
     </asset>
     <library_cameras>
@@ -508,6 +508,127 @@
                 </extra>
             </mesh>
         </geometry>
+        <geometry id="Geometry-mesh001" name="Doublecut_Wall">
+            <mesh>
+                <source id="Geometry-mesh001-positions" name="positions">
+                    <float_array id="Geometry-mesh001-positions-array" count="150">
+                        0 0 0
+                        1 0 0
+                        1 0 0.1
+                        0 0 0.1
+                        0 1 0
+                        1 1 0
+                        1 1 0.1
+                        0 1 0.1
+                        0 0.0668499 0
+                        1 0.0668499 0
+                        1 0.0668499 0.1
+                        0 0.0668499 0.1
+                        0 0 0
+                        1 0 0
+                        1 0 0.1
+                        0 0 0.1
+                        0 0.0668499 0
+                        1 0.0668499 0
+                        1 0.0668499 0.1
+                        0 0.0668499 0.1
+                        1 0 0.115
+                        0 0 0.115
+                        1 0.0668499 0.115
+                        0 0.0668499 0.115
+                        0.0425 1 -0.05
+                        0.95 1 -0.05
+                        0.95 1 0.05
+                        0.05 1 0.05
+                        0.0425 0.0668499 -0.05
+                        0.95 0.0668499 -0.05
+                        0.95 0.0668499 0.05
+                        0.05 0.0668499 0.05
+                        0.0425 0.0668499 -0.05
+                        0.95 0.0668499 -0.05
+                        0.95 0.0668499 0.05
+                        0.05 0.0668499 0.05
+                        0.95 0 0.065
+                        0.05 0 0.065
+                        0.95 0.0668499 0.065
+                        0.05 0.0668499 0.065
+                        0.0575 0 -0.065
+                        0.95 0 -0.065
+                        0.0575 0.0668499 -0.065
+                        0.95 0.0668499 -0.065
+                        1.066 0 -0.05
+                        1.066 0 0.05
+                        1.066 0.0668499 -0.05
+                        1.066 0.0668499 0.05
+                        1.066 0 -0.065
+                        1.066 0.0668499 -0.065
+                    </float_array>
+                    <technique_common>
+                        <accessor count="50" source="#Geometry-mesh001-positions-array" stride="3">
+                            <param name="X" type="float" />
+                            <param name="Y" type="float" />
+                            <param name="Z" type="float" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="Geometry-mesh001-normals" name="normals">
+                    <float_array id="Geometry-mesh001-normals-array" count="9">
+                        0 1 0
+                        0 0 -1
+                        0 0 1
+                    </float_array>
+                    <technique_common>
+                        <accessor count="3" source="#Geometry-mesh001-normals-array" stride="3">
+                            <param name="X" type="float" />
+                            <param name="Y" type="float" />
+                            <param name="Z" type="float" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="Geometry-mesh001-Texture" name="Texture">
+                    <float_array id="Geometry-mesh001-Texture-array" count="28">
+                        0.25 1
+                        0.25 0.666667
+                        0.5 0.666667
+                        0.5 1
+                        1 0.355617
+                        1 0.666667
+                        0.75 0.666667
+                        0.75 0.355617
+                        0.5 0.355617
+                        0.25 0.355617
+                        0.25 0.333333
+                        0.5 0.333333
+                        0.75 0.333333
+                        1 0.333333
+                    </float_array>
+                    <technique_common>
+                        <accessor count="14" source="#Geometry-mesh001-Texture-array" stride="2">
+                            <param name="S" type="float" />
+                            <param name="T" type="float" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <vertices id="Geometry-mesh001-vertices">
+                    <input semantic="POSITION" source="#Geometry-mesh001-positions" />
+                </vertices>
+                <polylist count="9" material="Material-Default">
+                    <input semantic="VERTEX" source="#Geometry-mesh001-vertices" offset="0" />
+                    <input semantic="NORMAL" source="#Geometry-mesh001-normals" offset="1" />
+                    <input semantic="TEXCOORD" source="#Geometry-mesh001-Texture" offset="2" set="0" />
+                    <vcount>4 4 4 4 4 4 4 4 4</vcount>
+                    <p>24 0 0 27 0 1 26 0 2 25 0 3 28 1 4 24 1 5 25 1 6 29 1 7 30 2 8 26 2 2 27 2 1 31 2 9 30 0 8 31 0 9 35 0 9 34 0 8 28 0 4 29 0 7 33 0 7 32 0 4 34 0 8 35 0 9 39 0 9 38 0 8 39 2 9 37 2 10 36 2 11 38 2 8 32 0 4 33 0 7 43 0 7 42 0 4 43 1 7 41 1 12 40 1 13 42 1 4</p>
+                </polylist>
+                <extra>
+                    <technique profile="modo401">
+                        <param sid="render" name="Render" type="Name">default</param>
+                        <param sid="dissolve" name="Dissolve" type="float">0</param>
+                        <param sid="curves" name="Render_Curves" type="bool">false</param>
+                        <param sid="radius" name="Curve_Radius" type="float">0.05</param>
+                    </technique>
+                </extra>
+            </mesh>
+        </geometry>
     </library_geometries>
     <library_lights>
         <light id="Light-polyRender005" name="Render">
@@ -657,6 +778,15 @@
             </node>
             <node id="Geometry-mesh239Node" name="Shortcut_Corner_Wall" type="NODE">
                 <instance_geometry url="#Geometry-mesh239">
+                    <bind_material>
+                        <technique_common>
+                            <instance_material symbol="Material-Default" target="#Material-Default" />
+                        </technique_common>
+                    </bind_material>
+                </instance_geometry>
+            </node>
+            <node id="Geometry-mesh001Node" name="Doublecut_Wall" type="NODE">
+                <instance_geometry url="#Geometry-mesh001">
                     <bind_material>
                         <technique_common>
                             <instance_material symbol="Material-Default" target="#Material-Default" />

@@ -48,7 +48,7 @@ public class cMap : MonoBehaviour
 		LoadFloorPrefabs();
 		LoadWallPrefabs();
 		
-		GenerateMap(100);
+		GenerateMap(2);
 		DrawMap();
 	}
 	
@@ -539,6 +539,10 @@ public class cMap : MonoBehaviour
 		tunnelMap[in_x, in_y] = 1;
 		pathMap[in_x, in_y] = 1;
 		lastPathWeight = 1;
+		
+//		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1);
+		GameObject.Find("Player").transform.position = new Vector3(1, 0, 1);
+
 	}
 	
 	void LoadWallPrefabs()
@@ -584,14 +588,20 @@ public class cMap : MonoBehaviour
 				if ((i < levelWidth) && (j < levelHeight))
 				{		
 					go = pfbFloor[floorMap[i,j]];
-					if (go)	Instantiate(go, new Vector3(i, -.5f, j), Quaternion.identity);
+					if (go)	Instantiate(go, new Vector3(i, 0f, j), Quaternion.identity);
 				}
 				
-				go = pfbWallX[wallMapX[i,j]];
-				if (go)	Instantiate(go, new Vector3(i2, 0, j2-.5f), Quaternion.identity);
+				if (wallMapX[i,j] == 1)	//	remove this condition for doors, breakable walls and windows
+				{
+					go = pfbWallX[wallMapX[i,j]];
+					if (go)	Instantiate(go, new Vector3(i2, .5f, j2-.5f), Quaternion.identity);
+				}
 				
-				go = pfbWallY[wallMapY[i,j]];
-				if (go)	Instantiate(go, new Vector3(i2-.5f, 0, j2), Quaternion.identity);
+				if (wallMapY[i,j] == 1)	//	remove this condition for doors, breakable walls and windows
+				{
+					go = pfbWallY[wallMapY[i,j]];
+					if (go)	Instantiate(go, new Vector3(i2-.5f, .5f, j2), Quaternion.identity);
+				}
 			}
 
 	}

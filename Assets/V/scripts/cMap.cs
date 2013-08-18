@@ -26,11 +26,18 @@ public class cMap : MonoBehaviour
 	const byte FLOOR_START					= 252;
 	const byte FLOOR_END						= 253;
 	const byte FLOOR_UNKNOWN				= 254;
-		
+	
+	const byte WALL_SOLID					= 1;
+	const byte WALL_DOOR					= 2;
+	const byte WALL_BREAKABLE			= 3;
+	const byte WALL_WINDOW				= 4;
+	
 	GameObject[] pfbFloor = new GameObject[256];
 	GameObject[] pfbWallX = new GameObject[8];
 	GameObject[] pfbWallY = new GameObject[8];
 
+	public GameObject pfbSolidWall;
+	
 	int level, levelWidth, levelHeight;
 	int[,] tunnelMap;
 	byte[,] floorMap;
@@ -48,7 +55,7 @@ public class cMap : MonoBehaviour
 		LoadFloorPrefabs();
 		LoadWallPrefabs();
 		
-		GenerateMap(2);
+		GenerateMap(100);
 		DrawMap();
 	}
 	
@@ -237,22 +244,63 @@ public class cMap : MonoBehaviour
 					PlaceRooms(FLOOR_SECRET,FLOOR_CORRIDOR, 1,1, 1,1);
 			
 		GenerateWalls();
+		
+		// Place some more doors
+		for (int i=0; i<3+level/4; i++)
+			PlaceDoor(FLOOR_CORRIDOR, FLOOR_UNKNOWN);
+		for (int i=0; i<3+level/4; i++)
+			PlaceDoor(FLOOR_UNKNOWN, FLOOR_UNKNOWN);
+		
+		// Place windows
+		for (int i=0; i<8+level/2; i++)
+			PlaceWindow();
 
 	}
 
+	void PlaceDoor(byte in_floorType1, byte in_floorType2)
+	{
+		for(int i=0; i < 500; i++)
+		{
+			int wx = Random.Range(1,levelWidth);
+			int wy = Random.Range(1,levelHeight);
+			int dir = Random.Range(0,2);
+			byte f1 = 0, f2 = 0;
+			if (dir == 0)
+			{
+				f1 = floorMap[wx,wy-1];
+				f2 = floorMap[wx,wy];
+				if ((wallMapX[wx,wy] == WALL_SOLID) && (wallMapX[wx-1,wy] != WALL_DOOR) && (wallMapX[wx+1,wy] != WALL_DOOR) && (wallMapY[wx,wy] != WALL_DOOR) && (wallMapY[wx,wy-1] != WALL_DOOR) && (wallMapY[wx+1,wy] != WALL_DOOR) && (wallMapY[wx+1,wy-1] != WALL_DOOR) && ( ((f1 == in_floorType1) && (f2 == in_floorType2)) || ((f2 == in_floorType1) && (f1 == in_floorType2)) ) )
+				{
+					wallMapX[wx,wy] = WALL_DOOR;
+					break;
+				}
+			}
+			else
+			{
+				f1 = floorMap[wx-1,wy];
+				f2 = floorMap[wx,wy];
+				if ((wallMapY[wx,wy] == WALL_SOLID) && (wallMapY[wx-1,wy] != WALL_DOOR) && (wallMapY[wx+1,wy] != WALL_DOOR) && (wallMapX[wx,wy] != WALL_DOOR) && (wallMapX[wx-1,wy] != WALL_DOOR) && (wallMapX[wx+1,wy] != WALL_DOOR) && (wallMapX[wx+1,wy-1] != WALL_DOOR) && ( ((f1 == in_floorType1) && (f2 == in_floorType2)) || ((f2 == in_floorType1) && (f1 == in_floorType2)) ) )
+				{
+					wallMapY[wx,wy] = WALL_WINDOW;
+					break;
+				}
+			}
+		}
+	}
+	
 	void SetEndPoint(int in_x, int in_y, int in_dir)
 	{
 		scx2 = in_x;
 		scy2 = in_y;
 		scd2 = in_dir;
-		wallMapX[in_x,in_y] = 1;
-		wallMapX[in_x,in_y+1] = 1;
-		wallMapY[in_x+1,in_y] = 1;
-		wallMapY[in_x,in_y] = 1;
-		if (in_dir == 0)	wallMapX[in_x,in_y] = 2;
-		else if (in_dir == 1)	wallMapY[in_x,in_y] = 2;
-		else if (in_dir == 2)	wallMapX[in_x,in_y+1] = 2;
-		else if (in_dir == 3)	wallMapY[in_x+1,in_y] = 2;
+		wallMapX[in_x,in_y] = WALL_SOLID;
+		wallMapX[in_x,in_y+1] = WALL_SOLID;
+		wallMapY[in_x+1,in_y] = WALL_SOLID;
+		wallMapY[in_x,in_y] = WALL_SOLID;
+		if (in_dir == 0)	wallMapX[in_x,in_y] = WALL_DOOR;
+		else if (in_dir == 1)	wallMapY[in_x,in_y] = WALL_DOOR;
+		else if (in_dir == 2)	wallMapX[in_x,in_y+1] = WALL_DOOR;
+		else if (in_dir == 3)	wallMapY[in_x+1,in_y] = WALL_DOOR;
 		floorMap[in_x,in_y] = FLOOR_END;
 		tunnelMap[in_x, in_y] = 2;
 	}
@@ -268,7 +316,7 @@ public class cMap : MonoBehaviour
 				
 				if (i < levelWidth-1)	b2 = tunnelMap[i+1,j];
 				bool okToSetWall = false;
-				if ((wallMapY[i+1,j] == 0) || (wallMapY[i+1,j] == 1))
+				if ((wallMapY[i+1,j] == 0) || (wallMapY[i+1,j] == WALL_SOLID))
 				{
 					if (b1 != b2)
 					{
@@ -278,12 +326,12 @@ public class cMap : MonoBehaviour
 							okToSetWall = true;
 					}
 				}
-				if (okToSetWall)	wallMapY[i+1,j] = 1;
+				if (okToSetWall)	wallMapY[i+1,j] = WALL_SOLID;
 				
 				b2 = 0;
 				if (j < levelHeight-1)	b2 = tunnelMap[i,j+1];
 				okToSetWall = false;
-				if ((wallMapX[i,j+1] == 0) || (wallMapX[i,j+1] == 1))
+				if ((wallMapX[i,j+1] == 0) || (wallMapX[i,j+1] == WALL_SOLID))
 				{
 					if (b1 != b2)
 					{
@@ -293,22 +341,57 @@ public class cMap : MonoBehaviour
 							okToSetWall = true;
 					}
 				}
-				if (okToSetWall)	wallMapX[i,j+1] = 1;
+				if (okToSetWall)	wallMapX[i,j+1] = WALL_SOLID;
 				
 			}
 		}
 		
 		for(int i = 0; i<levelHeight; i++)
 			if (tunnelMap[0,i] > 0)
-				if (wallMapY[0,i] != 2)
-					wallMapY[0,i] = 1;
+				if (wallMapY[0,i] != WALL_DOOR)
+					wallMapY[0,i] = WALL_SOLID;
 		
 		for(int i = 0; i<levelWidth; i++)
 			if (tunnelMap[i,0] > 0)
-				if (wallMapX[i,0] != 2)
-					wallMapX[i,0] = 1;
+				if (wallMapX[i,0] != WALL_DOOR)
+					wallMapX[i,0] = WALL_SOLID;
 	}
 
+	void PlaceWindow()
+	{
+		for(int i=0; i < 500; i++)
+		{
+			int wx = Random.Range(1,levelWidth);
+			int wy = Random.Range(1,levelHeight);
+			int dir = Random.Range(0,2);
+			byte f1 = 0, f2 = 0;
+			if (dir == 0)
+			{
+				f1 = floorMap[wx,wy-1];
+				f2 = floorMap[wx,wy];
+				if (wallMapX[wx,wy] == WALL_SOLID)
+				{
+					if ((f1 == FLOOR_CORRIDOR) && ((f2 == FLOOR_BAR) || (f2 == FLOOR_CONFERENCE) || (f2 == FLOOR_CUBICLE) || (f2 == FLOOR_LUNCH) || (f2 == FLOOR_RELAX) || (f2 == FLOOR_UNKNOWN)))
+					{	wallMapX[wx,wy] = WALL_WINDOW;	break;	}
+					else if ((f2 == FLOOR_CORRIDOR) && ((f1 == FLOOR_BAR) || (f1 == FLOOR_CONFERENCE) || (f1 == FLOOR_CUBICLE) || (f1 == FLOOR_LUNCH) || (f1 == FLOOR_RELAX) || (f1 == FLOOR_UNKNOWN)))
+					{	wallMapX[wx,wy] = WALL_WINDOW;	break;	}
+				}
+			}
+			else
+			{
+				f1 = floorMap[wx-1,wy];
+				f2 = floorMap[wx,wy];
+				if (wallMapY[wx,wy] == WALL_SOLID)
+				{
+					if ((f1 == FLOOR_CORRIDOR) && ((f2 == FLOOR_BAR) || (f2 == FLOOR_CONFERENCE) || (f2 == FLOOR_CUBICLE) || (f2 == FLOOR_LUNCH) || (f2 == FLOOR_RELAX) || (f2 == FLOOR_UNKNOWN)))
+					{	wallMapY[wx,wy] = WALL_WINDOW;	break;	}
+					else if ((f2 == FLOOR_CORRIDOR) && ((f1 == FLOOR_BAR) || (f1 == FLOOR_CONFERENCE) || (f1 == FLOOR_CUBICLE) || (f1 == FLOOR_LUNCH) || (f1 == FLOOR_RELAX) || (f1 == FLOOR_UNKNOWN)))
+					{	wallMapY[wx,wy] = WALL_WINDOW;	break;	}
+				}
+			}
+		}
+	}
+	
 	void PlaceRooms(byte in_roomType, byte in_connectToFloorType, int in_width, int in_depth, int in_minCount, int in_maxCount)
 	{
 		int sajsDepth = in_depth, sajsWidth = in_width, minCount = in_minCount, maxCount = in_maxCount;
@@ -360,8 +443,8 @@ public class cMap : MonoBehaviour
 			{
 				int doorOffset = Random.Range(0,sajsWidth);
 				int boundX1 = 99999, boundY1 = 99999, boundX2 = -99999, boundY2 = -99999;
-				byte doorType = 2;
-				if (in_roomType == FLOOR_SECRET)	doorType = 3;
+				byte doorType = WALL_DOOR;
+				if (in_roomType == FLOOR_SECRET)	doorType = WALL_BREAKABLE;
 				for (int i2=0; i2<=idealCount-1; i2++)
 				{
 					if (in_roomType == FLOOR_SECRET)	levelSecretRoomCount++;
@@ -527,21 +610,21 @@ public class cMap : MonoBehaviour
 		scx1 = in_x;
 		scy1 = in_y;
 		scd1 = in_dir;
-		wallMapX[in_x,in_y] = 1;
-		wallMapX[in_x,in_y+1] = 1;
-		wallMapY[in_x+1,in_y] = 1;
-		wallMapY[in_x,in_y] = 1;
-		if (in_dir == 0)	wallMapX[in_x,in_y] = 2;
-		else if (in_dir == 1)	wallMapY[in_x,in_y] = 2;
-		else if (in_dir == 2)	wallMapX[in_x,in_y+1] = 2;
-		else if (in_dir == 3)	wallMapY[in_x+1,in_y] = 2;
+		wallMapX[in_x,in_y] = WALL_SOLID;
+		wallMapX[in_x,in_y+1] = WALL_SOLID;
+		wallMapY[in_x+1,in_y] = WALL_SOLID;
+		wallMapY[in_x,in_y] = WALL_SOLID;
+		if (in_dir == 0)	wallMapX[in_x,in_y] = WALL_DOOR;
+		else if (in_dir == 1)	wallMapY[in_x,in_y] = WALL_DOOR;
+		else if (in_dir == 2)	wallMapX[in_x,in_y+1] = WALL_DOOR;
+		else if (in_dir == 3)	wallMapY[in_x+1,in_y] = WALL_DOOR;
 		floorMap[in_x,in_y] = FLOOR_START;
 		tunnelMap[in_x, in_y] = 1;
 		pathMap[in_x, in_y] = 1;
 		lastPathWeight = 1;
 		
-//		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1);
-		GameObject.Find("Player").transform.position = new Vector3(1, 0, 1);
+		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1);
+//		GameObject.Find("Player").transform.position = new Vector3(1, 0, 1);
 
 	}
 	
@@ -591,6 +674,51 @@ public class cMap : MonoBehaviour
 					if (go)	Instantiate(go, new Vector3(i, 0f, j), Quaternion.identity);
 				}
 				
+				if (wallMapX[i,j] == WALL_SOLID)
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+				else if (wallMapX[i,j] == WALL_DOOR)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.collider.enabled = false;
+					go.renderer.material.color = new Color(1f, 0f, 0f, 1f);
+				}
+				else if (wallMapX[i,j] == WALL_BREAKABLE)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.renderer.material.color = new Color(0f, 0f, 0f, 1f);
+				}
+				else if (wallMapX[i,j] == WALL_WINDOW)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
+				}
+
+				if (wallMapY[i,j] == WALL_SOLID)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.Rotate(0,90,0);
+				}
+				else if (wallMapY[i,j] == WALL_DOOR)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.Rotate(0,90,0);
+					go.collider.enabled = false;
+					go.renderer.material.color = new Color(1f, 0f, 0f, 1f);
+				}
+				else if (wallMapY[i,j] == WALL_BREAKABLE)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.Rotate(0,90,0);
+					go.renderer.material.color = new Color(0f, 0f, 0f, 1f);
+				}
+				else if (wallMapY[i,j] == WALL_WINDOW)
+				{
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.Rotate(0,90,0);
+					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
+				}
+				
+				/*
 				if (wallMapX[i,j] == 1)	//	remove this condition for doors, breakable walls and windows
 				{
 					go = pfbWallX[wallMapX[i,j]];
@@ -602,6 +730,7 @@ public class cMap : MonoBehaviour
 					go = pfbWallY[wallMapY[i,j]];
 					if (go)	Instantiate(go, new Vector3(i2-.5f, .5f, j2), Quaternion.identity);
 				}
+				*/
 			}
 
 	}

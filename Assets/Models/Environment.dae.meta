@@ -12,6 +12,11 @@ ModelImporter:
     100012: Single_Corner_Wall_Reverse
     100014: Shortcut_Corner_Wall
     100016: Doublecut_Wall
+    100018: Wall_End
+    100020: Wall_End_1-side
+    100022: Wall_End_2-side
+    100024: Wall_End_3-side
+    100026: Wall_End_0-side
     400000: Camera
     400002: Directional_Light
     400004: //RootNode
@@ -21,21 +26,41 @@ ModelImporter:
     400012: Single_Corner_Wall_Reverse
     400014: Shortcut_Corner_Wall
     400016: Doublecut_Wall
+    400018: Wall_End
+    400020: Wall_End_1-side
+    400022: Wall_End_2-side
+    400024: Wall_End_3-side
+    400026: Wall_End_0-side
     2300000: Freestanding_Wall
     2300002: Single_Corner_Wall
     2300004: Single_Corner_Wall_Reverse
     2300006: Shortcut_Corner_Wall
     2300008: Doublecut_Wall
+    2300010: Wall_End
+    2300012: Wall_End_1-side
+    2300014: Wall_End_2-side
+    2300016: Wall_End_3-side
+    2300018: Wall_End_0-side
     3300000: Freestanding_Wall
     3300002: Single_Corner_Wall
     3300004: Single_Corner_Wall_Reverse
     3300006: Shortcut_Corner_Wall
     3300008: Doublecut_Wall
+    3300010: Wall_End
+    3300012: Wall_End_1-side
+    3300014: Wall_End_2-side
+    3300016: Wall_End_3-side
+    3300018: Wall_End_0-side
     4300000: Freestanding_Wall
     4300002: Single_Corner_Wall
     4300004: Single_Corner_Wall_Reverse
     4300006: Shortcut_Corner_Wall
     4300008: Doublecut_Wall
+    4300010: Wall_End
+    4300012: Wall_End_3-side
+    4300014: Wall_End_2-side
+    4300016: Wall_End_1-side
+    4300018: Wall_End_0-side
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -56,12 +81,10 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
-    weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88

@@ -90,14 +90,7 @@ public class PlayerControl : MonoBehaviour {
 			
 			
 
-			//graphics.SetActive(showing);
-		
-	}
-	
-	
-	
-	// Update is called once per frame
-	void Update () {
+
 		float hA = Input.GetAxis("Horizontal A");
 		float vA = Input.GetAxis("Vertical A");
 		float hB = Input.GetAxis("Horizontal B");

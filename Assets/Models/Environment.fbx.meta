@@ -1,30 +1,49 @@
 fileFormatVersion: 2
-guid: 0670a6029cb5847e68c0481253e4bbb9
+guid: 37256607cde0d47e5b6c80db7211eeec
 ModelImporter:
   serializedVersion: 15
   fileIDToRecycleName:
-    100000: Binder
+    100000: Basic Wall
     100002: Camera
-    100004: Desk
-    100006: Directional_Light
-    100008: Environment__Image___Texture_
+    100004: Directional Light
+    100006: Door
+    100008: Doorway
     100010: //RootNode
-    100012: Render
-    100014: Texture_Group
-    400000: Binder
+    100012: Wall End 0-side
+    100014: Wall End 1-side
+    100016: Wall End 2-side
+    100018: Wall End 3-side
+    400000: Basic Wall
     400002: Camera
-    400004: Desk
-    400006: Directional_Light
-    400008: Environment__Image___Texture_
+    400004: Directional Light
+    400006: Door
+    400008: Doorway
     400010: //RootNode
-    400012: Render
-    400014: Texture_Group
-    2300000: Binder
-    2300002: Desk
-    3300000: Binder
-    3300002: Desk
-    4300000: Desk
-    4300002: Binder
+    400012: Wall End 0-side
+    400014: Wall End 1-side
+    400016: Wall End 2-side
+    400018: Wall End 3-side
+    2300000: Basic Wall
+    2300002: Door
+    2300004: Doorway
+    2300006: Wall End 0-side
+    2300008: Wall End 1-side
+    2300010: Wall End 2-side
+    2300012: Wall End 3-side
+    3300000: Basic Wall
+    3300002: Door
+    3300004: Doorway
+    3300006: Wall End 0-side
+    3300008: Wall End 1-side
+    3300010: Wall End 2-side
+    3300012: Wall End 3-side
+    4300000: Basic Wall
+    4300002: Wall End 3-side
+    4300004: Wall End 2-side
+    4300006: Wall End 1-side
+    4300008: Wall End 0-side
+    4300010: Doorway
+    4300012: Door
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -42,7 +61,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .00999999978
     meshCompression: 0
     addColliders: 0
     swapUVChannels: 0

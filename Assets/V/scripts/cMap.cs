@@ -671,36 +671,46 @@ public class cMap : MonoBehaviour
 				if ((i < levelWidth) && (j < levelHeight))
 				{		
 					go = pfbFloor[floorMap[i,j]];
-					if (go)	Instantiate(go, new Vector3(i, 0f, j), Quaternion.identity);
+					if (go)	{
+						GameObject floorInstance = Instantiate(go, new Vector3(i, 0f, j), Quaternion.identity) as GameObject;
+						floorInstance.transform.parent = transform; // Set instance as child of World object
+					}
 				}
 				
-				if (wallMapX[i,j] == WALL_SOLID)
-					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+				if (wallMapX[i,j] == WALL_SOLID) {
+					go = Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity) as GameObject;
+					go.transform.parent = transform; // Set instance as child of World object
+				} 
 				else if (wallMapX[i,j] == WALL_DOOR)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 					go.collider.enabled = false;
 					go.renderer.material.color = new Color(1f, 0f, 0f, 1f);
 				}
 				else if (wallMapX[i,j] == WALL_BREAKABLE)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 					go.renderer.material.color = new Color(0f, 0f, 0f, 1f);
 				}
 				else if (wallMapX[i,j] == WALL_WINDOW)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
 				}
 
 				if (wallMapY[i,j] == WALL_SOLID)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 					go.transform.Rotate(0,90,0);
 				}
 				else if (wallMapY[i,j] == WALL_DOOR)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 					go.transform.Rotate(0,90,0);
 					go.collider.enabled = false;
 					go.renderer.material.color = new Color(1f, 0f, 0f, 1f);
@@ -708,15 +718,20 @@ public class cMap : MonoBehaviour
 				else if (wallMapY[i,j] == WALL_BREAKABLE)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 					go.transform.Rotate(0,90,0);
 					go.renderer.material.color = new Color(0f, 0f, 0f, 1f);
 				}
 				else if (wallMapY[i,j] == WALL_WINDOW)
 				{
-					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity) as GameObject;
+					go.transform.parent = transform; // Set instance as child of World object
 					go.transform.Rotate(0,90,0);
 					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
 				}
+				
+			
+				
 				
 				/*
 				if (wallMapX[i,j] == 1)	//	remove this condition for doors, breakable walls and windows

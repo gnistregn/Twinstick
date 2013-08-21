@@ -37,6 +37,11 @@ public class cMap : MonoBehaviour
 	GameObject[] pfbWallY = new GameObject[8];
 
 	public GameObject pfbSolidWall;
+	public GameObject pfbCorner0;
+	public GameObject pfbCorner1;
+	public GameObject pfbCorner2_1;
+	public GameObject pfbCorner2_2;
+	public GameObject pfbCorner3;
 	
 	int level, levelWidth, levelHeight;
 	int[,] tunnelMap;
@@ -55,7 +60,7 @@ public class cMap : MonoBehaviour
 		LoadFloorPrefabs();
 		LoadWallPrefabs();
 		
-		GenerateMap(100);
+		GenerateMap(2);
 		DrawMap();
 	}
 	
@@ -661,6 +666,15 @@ public class cMap : MonoBehaviour
 
 	void DrawMap()
 	{
+		Instantiate(pfbSolidWall, new Vector3(0f, 0f, 0f), Quaternion.identity);
+		Instantiate(pfbCorner3, new Vector3(0f, 0f, 0f), Quaternion.identity);
+		
+		
+		for(int j=0; j<100; j++)
+			wallMapX[Random.Range(0,levelWidth), Random.Range(0,levelHeight)] = 0;
+		for(int j=0; j<100; j++)
+			wallMapY[Random.Range(0,levelWidth), Random.Range(0,levelHeight)] = 0;
+	
 		for(int j=0; j<levelHeight+1; j++)
 			for(int i=0; i<levelWidth+1; i++)
 			{
@@ -701,6 +715,52 @@ public class cMap : MonoBehaviour
 					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
 				}
 
+				byte wmx1 = 0, wmx2 = 0;
+				byte wmy1 = 0, wmy2 = 0;
+				int degrees = 0;
+				
+				if (i > 0)	wmx1 = wallMapX[i-1,j];
+				wmx2 = wallMapX[i,j];
+				
+				if (j > 0)	wmy1 = wallMapY[i,j-1];
+				wmy2 = wallMapY[i,j];
+				
+				if ((wmx1 > 0) || (wmx2 > 0) || (wmy1 > 0) || (wmy2 > 0))
+				{
+					go = pfbCorner0;
+					int connections = 0;
+					if (wmx1 > 0)	connections++;
+					if (wmx2 > 0)	connections++;
+					if (wmy1 > 0)	connections++;
+					if (wmy2 > 0)	connections++;
+					if (connections == 1)
+					{
+						go = pfbCorner3;
+						degrees = 45;
+						// if ((wmx1 > 0) && (wmx2 == 0))	degrees = 180;
+						// else if ((wmy1 > 0) && (wmy2 == 0))	degrees = 270;
+						// else if ((wmy2 > 0) && (wmy1 == 0))	degrees = 90;
+						
+						// Do it the hard way since the model isn't aligned after its own center
+						// go = (GameObject)Instantiate(go, new Vector3(0f, 0f, 0f), Quaternion.identity);
+						// go.transform.parent = transform;
+						// go.transform.RotateAround(new Vector3(0f,0f,0f),Vector3.up,degrees);
+						// go.transform.position = new Vector3(i2+.5f, 0f, j2-.5f);
+					}
+					else if (connections == 4)
+					{
+						go = (GameObject)Instantiate(go, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+						go.transform.parent = transform;
+					}
+					else
+					{
+						// go = (GameObject)Instantiate(go, new Vector3(0f, 0f, 0f), Quaternion.identity);
+						// go.transform.parent = transform;
+						//go.transform.Rotate(0,degrees,0);
+					}
+					
+				}
+				
 				if (wallMapY[i,j] == WALL_SOLID)
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);

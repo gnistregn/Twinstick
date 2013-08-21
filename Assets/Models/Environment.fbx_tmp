@@ -10,10 +10,10 @@ FBXHeaderExtension:  {
         Version: 1000
         Year: 2013
         Month: 8
-        Day: 22
-        Hour: 0
-        Minute: 24
-        Second: 58
+        Day: 21
+        Hour: 23
+        Minute: 26
+        Second: 17
         Millisecond: 0
     }
     Creator: "FBX SDK/FBX Plugins version 2010.2"
@@ -21,7 +21,7 @@ FBXHeaderExtension:  {
         FlagPLE: 0
     }
 }
-CreationTime: "2013-08-22 00:24:58:000"
+CreationTime: "2013-08-21 23:26:17:000"
 Creator: "FBX SDK/FBX Plugins build 20090731"
 
 ; Document Description
@@ -234,9 +234,9 @@ Objects:  {
         Properties60:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "RotationOffset", "Vector3D", "",0,0,0
-            Property: "RotationPivot", "Vector3D", "",100,0,0
+            Property: "RotationPivot", "Vector3D", "",0,0,0
             Property: "ScalingOffset", "Vector3D", "",0,0,0
-            Property: "ScalingPivot", "Vector3D", "",100,0,0
+            Property: "ScalingPivot", "Vector3D", "",0,0,0
             Property: "TranslationActive", "bool", "",0
             Property: "TranslationMin", "Vector3D", "",0,0,0
             Property: "TranslationMax", "Vector3D", "",0,0,0
@@ -404,9 +404,9 @@ Objects:  {
         Properties60:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "RotationOffset", "Vector3D", "",0,0,0
-            Property: "RotationPivot", "Vector3D", "",100,0,0
+            Property: "RotationPivot", "Vector3D", "",0,0,0
             Property: "ScalingOffset", "Vector3D", "",0,0,0
-            Property: "ScalingPivot", "Vector3D", "",100,0,0
+            Property: "ScalingPivot", "Vector3D", "",0,0,0
             Property: "TranslationActive", "bool", "",0
             Property: "TranslationMin", "Vector3D", "",0,0,0
             Property: "TranslationMax", "Vector3D", "",0,0,0
@@ -566,9 +566,9 @@ Objects:  {
         Properties60:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "RotationOffset", "Vector3D", "",0,0,0
-            Property: "RotationPivot", "Vector3D", "",100,0,0
+            Property: "RotationPivot", "Vector3D", "",0,0,0
             Property: "ScalingOffset", "Vector3D", "",0,0,0
-            Property: "ScalingPivot", "Vector3D", "",100,0,0
+            Property: "ScalingPivot", "Vector3D", "",0,0,0
             Property: "TranslationActive", "bool", "",0
             Property: "TranslationMin", "Vector3D", "",0,0,0
             Property: "TranslationMax", "Vector3D", "",0,0,0
@@ -723,9 +723,9 @@ Objects:  {
         Properties60:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "RotationOffset", "Vector3D", "",0,0,0
-            Property: "RotationPivot", "Vector3D", "",100,0,0
+            Property: "RotationPivot", "Vector3D", "",0,0,0
             Property: "ScalingOffset", "Vector3D", "",0,0,0
-            Property: "ScalingPivot", "Vector3D", "",100,0,0
+            Property: "ScalingPivot", "Vector3D", "",0,0,0
             Property: "TranslationActive", "bool", "",0
             Property: "TranslationMin", "Vector3D", "",0,0,0
             Property: "TranslationMax", "Vector3D", "",0,0,0
@@ -1223,9 +1223,9 @@ Objects:  {
         Properties60:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "RotationOffset", "Vector3D", "",0,0,0
-            Property: "RotationPivot", "Vector3D", "",100,0,0
+            Property: "RotationPivot", "Vector3D", "",0,0,0
             Property: "ScalingOffset", "Vector3D", "",0,0,0
-            Property: "ScalingPivot", "Vector3D", "",100,0,0
+            Property: "ScalingPivot", "Vector3D", "",0,0,0
             Property: "TranslationActive", "bool", "",0
             Property: "TranslationMin", "Vector3D", "",0,0,0
             Property: "TranslationMax", "Vector3D", "",0,0,0

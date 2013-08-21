@@ -666,15 +666,6 @@ public class cMap : MonoBehaviour
 
 	void DrawMap()
 	{
-		Instantiate(pfbSolidWall, new Vector3(0f, 0f, 0f), Quaternion.identity);
-		Instantiate(pfbCorner3, new Vector3(0f, 0f, 0f), Quaternion.identity);
-		
-		
-		for(int j=0; j<100; j++)
-			wallMapX[Random.Range(0,levelWidth), Random.Range(0,levelHeight)] = 0;
-		for(int j=0; j<100; j++)
-			wallMapY[Random.Range(0,levelWidth), Random.Range(0,levelHeight)] = 0;
-	
 		for(int j=0; j<levelHeight+1; j++)
 			for(int i=0; i<levelWidth+1; i++)
 			{
@@ -736,29 +727,30 @@ public class cMap : MonoBehaviour
 					if (connections == 1)
 					{
 						go = pfbCorner3;
-						degrees = 45;
-						// if ((wmx1 > 0) && (wmx2 == 0))	degrees = 180;
-						// else if ((wmy1 > 0) && (wmy2 == 0))	degrees = 270;
-						// else if ((wmy2 > 0) && (wmy1 == 0))	degrees = 90;
-						
-						// Do it the hard way since the model isn't aligned after its own center
-						// go = (GameObject)Instantiate(go, new Vector3(0f, 0f, 0f), Quaternion.identity);
-						// go.transform.parent = transform;
-						// go.transform.RotateAround(new Vector3(0f,0f,0f),Vector3.up,degrees);
-						// go.transform.position = new Vector3(i2+.5f, 0f, j2-.5f);
+						if ((wmx1 > 0) && (wmx2 == 0))	degrees = 180;
+						else if ((wmy1 > 0) && (wmy2 == 0))	degrees = 90;
+						else if ((wmy2 > 0) && (wmy1 == 0))	degrees = 270;
 					}
-					else if (connections == 4)
+					else if (connections == 3)
 					{
-						go = (GameObject)Instantiate(go, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
-						go.transform.parent = transform;
+						go = pfbCorner1;
+						if ((wmx1 > 0) && (wmx2 == 0))	degrees = 90;
+						else if ((wmy1 > 0) && (wmy2 == 0))	degrees = 0;
+						else if ((wmy2 > 0) && (wmy1 == 0))	degrees = 180;
+						else degrees = 270;
 					}
-					else
+					else if (connections == 2)
 					{
-						// go = (GameObject)Instantiate(go, new Vector3(0f, 0f, 0f), Quaternion.identity);
-						// go.transform.parent = transform;
-						//go.transform.Rotate(0,degrees,0);
+						if ((wmx1 > 0) && (wmx2 > 0))	{	go = pfbCorner2_2;	degrees = 0;	}
+						else if ((wmy1 > 0) && (wmy2 > 0))	{	go = pfbCorner2_2;	degrees = 90;	}
+						else if ((wmx1 > 0) && (wmy1 > 0))	{	go = pfbCorner2_1;	degrees = 90;	}
+						else if ((wmx2 > 0) && (wmy1 > 0))	{	go = pfbCorner2_1;	degrees = 0;	}
+						else if ((wmx1 > 0) && (wmy2 > 0))	{	go = pfbCorner2_1;	degrees = 180;	}
+						else if ((wmx2 > 0) && (wmy2 > 0))	{	go = pfbCorner2_1;	degrees = 270;	}
 					}
-					
+					go = (GameObject)Instantiate(go, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform;
+					go.transform.Rotate(0,degrees,0);
 				}
 				
 				if (wallMapY[i,j] == WALL_SOLID)

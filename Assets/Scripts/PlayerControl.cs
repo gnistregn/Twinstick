@@ -1,10 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
+
+/*
+	
+	TODO: Separate FOV/viewdistance from this script and move into separate reusable script
+	
+*/
+
 public class PlayerControl : MonoBehaviour {
 
 
-	public int hitPoints = 100;
+
 	
 	CharacterController controller;
 
@@ -184,14 +191,7 @@ public class PlayerControl : MonoBehaviour {
 	}
 	
 	
-	public void TakeDamage (int amount) {
-		Debug.Log("Took damage " + amount);
-		hitPoints -= amount;
-		if (hitPoints < 0) {
-			Destroy(gameObject);
-		}
-	}
-	
+
 	
 	
 	

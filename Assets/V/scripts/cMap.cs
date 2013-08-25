@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Pathfinding;
 
 public class cMap : MonoBehaviour
 {
@@ -42,6 +43,9 @@ public class cMap : MonoBehaviour
 	public GameObject pfbCorner2_1;
 	public GameObject pfbCorner2_2;
 	public GameObject pfbCorner3;
+	
+	public GameObject pfbHider;	// Prefab for black hider block
+	
 	
 	int level, levelWidth, levelHeight;
 	int[,] tunnelMap;
@@ -628,8 +632,9 @@ public class cMap : MonoBehaviour
 		pathMap[in_x, in_y] = 1;
 		lastPathWeight = 1;
 		
-		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1);
-//		GameObject.Find("Player").transform.position = new Vector3(1, 0, 1);
+		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1); // Set player start position
+		
+		GameObject.Find("Enemy").transform.position = new Vector3(scx1 + 4, 0, scy1); // Ful-set enemy start position
 
 	}
 	
@@ -666,9 +671,39 @@ public class cMap : MonoBehaviour
 
 	void DrawMap()
 	{
+		
+
+
+		// Blanket the entire map in black hider blocks
+		for (int i = -1; i < levelWidth + 1; i++) {
+
+			for (int j = -1; j < levelHeight + 1; j++) {
+				
+				if (i == scx1 && j == scy1) {
+					
+				} else {
+					
+					GameObject hider = Instantiate(pfbHider, new Vector3(i, 0.5f, j), Quaternion.identity) as GameObject;
+					hider.transform.parent = transform;
+					
+				}
+
+			}
+
+		}
+		
+		
+		
+		
+
+
+
+
+		
 		for(int j=0; j<levelHeight+1; j++)
 			for(int i=0; i<levelWidth+1; i++)
 			{
+				
 				float i2 = i;
 				float j2 = j;
 				GameObject go;
@@ -799,7 +834,18 @@ public class cMap : MonoBehaviour
 				}
 				*/
 			}
+			
+			
+			RefreshPathfinding();
 
+	}
+	
+	private void RefreshPathfinding () {
+		
+		Debug.Log("Refreshing pathfinding...");
+		
+		AstarPath.active.Scan();
+		
 	}
 	
 	void Update()

@@ -32,10 +32,10 @@ public class PlayerBrain : MonoBehaviour {
 	
 	
 	
-	
+	// Det här ska inte skötas från spelaren. Snarare ska grafiken sköta sig själv.
 	public void UpdateStatusLabel () {
 		
-		statusLabel.text = hitPoints + "/" + maxHitPoints + "\n" + expPoints + "/" + nextLevel + "\n" + 99;
+		if (statusLabel != null) statusLabel.text = hitPoints + "/" + maxHitPoints + "\n" + expPoints + "/" + nextLevel + "\n" + 99;
 		
 	}
 	

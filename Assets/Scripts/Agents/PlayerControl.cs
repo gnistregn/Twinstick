@@ -15,27 +15,21 @@ public class PlayerControl : MonoBehaviour {
 	
 	CharacterController controller;
 
-	public float viewDistance = 5; 	// How far can I see?
-	public float totalFOV = 90;		// The total Field of View
-	private float halfFOV;			// Half of the FOV
 
 	private GameObject[] worldThings;
-
+	
+	public bool debug = true;
 
 	public Transform torso;
 	public Transform legs;
 	public Transform gun;
-	
-	public Transform eyes;
-	
-	public GameObject hitGraphic;
-	
+		
 	private Vector3 bodyDirection;
 	private Vector3 bodyTargetDirection;
 	private Vector3 aimDirection;
 	private Vector3 aimTargetDirection;
 	
-	private bool firedGun;
+
 	
 	
 	// Use this for initialization
@@ -45,17 +39,12 @@ public class PlayerControl : MonoBehaviour {
 	
 		
 		
-		halfFOV = totalFOV / 2;
-		
 		bodyDirection = new Vector3(1,0,0);
 		bodyTargetDirection = bodyDirection;
 		aimDirection = new Vector3(1,0,0);
 		aimTargetDirection = aimDirection;
 		
-		firedGun = false;
-		
-		worldThings = GameObject.FindGameObjectsWithTag("Enemy");
-		
+	
 		
 	}
 	
@@ -64,64 +53,34 @@ public class PlayerControl : MonoBehaviour {
 	
 	void FixedUpdate () {
 		
-	
-			// What can I see?
-			if (worldThings != null) {
-				
-					foreach (GameObject thing in worldThings) {
-
-						if (thing != null) {
-
-							Vector3 rayDirection = thing.transform.position - eyes.position;
-							//Debug.DrawRay(eyes.position, rayDirection, Color.blue);
-							RaycastHit hit;
-							if (Vector3.Angle(rayDirection, aimDirection) < halfFOV) {
-								Physics.Raycast(eyes.position, rayDirection, out hit);
-								if (hit.transform.gameObject == thing) {
-								//	Debug.DrawRay(eyes.position, hit.point - eyes.position, Color.cyan);
-									hit.transform.gameObject.SendMessage("Seen", SendMessageOptions.DontRequireReceiver);
-								} else {
-									thing.SendMessage("Unseen", SendMessageOptions.DontRequireReceiver);
-								}
-							} else {
-								thing.SendMessage("Unseen", SendMessageOptions.DontRequireReceiver);
-							}
-
-						}
 
 
-					}
-				
-			}
-		
+		float hA = 0;
+		float vA = 0;
+		float hB = 0;
+		float vB = 0;
+
+		if (debug) {
+
+			hA = Input.GetAxis("Keyboard Horizontal");
+			vA = Input.GetAxis("Keyboard Vertical");
+
+		} else {
 			
+			hA = Input.GetAxis("Horizontal A");
+			vA = Input.GetAxis("Vertical A");
+			hB = Input.GetAxis("Horizontal B");
+			vB = Input.GetAxis("Vertical B");
 			
-
-
-		float hA = Input.GetAxis("Horizontal A");
-		float vA = Input.GetAxis("Vertical A");
-		float hB = Input.GetAxis("Horizontal B");
-		float vB = Input.GetAxis("Vertical B");
+		}
  		
-
-
- 		if (Input.GetAxis("Fire") > 0 && !firedGun) {
-			Debug.Log("Fire!");
-			firedGun = true;
-			gun.SendMessage("Fire");
-			var fwd = transform.TransformDirection (Vector3.forward);
-			RaycastHit hit;
-			Debug.Log(aimDirection);
-			if (Physics.Raycast (gun.position, aimDirection, out hit)) {
-				Debug.Log("hit! " + hit.normal);
-				hit.transform.gameObject.SendMessage("TakeDamage", 25, SendMessageOptions.DontRequireReceiver);
-				Instantiate(hitGraphic, hit.point, Quaternion.FromToRotation(transform.up,  Vector3.Reflect (aimDirection, hit.normal)));
-			}
+ 		if (Input.GetAxis("Fire") > 0) {
+			gun.SendMessage("Trigger");
 
 		}
 		
 		if (Input.GetAxis("Fire") < 0) {
-			firedGun = false;
+			gun.SendMessage("Release");
 		}
 		
 		
@@ -195,19 +154,6 @@ public class PlayerControl : MonoBehaviour {
 	
 	
 	
-	
-	void OnDrawGizmos () {
-		
-		// FOV Gizmo
-		Gizmos.color = Color.green;
-		Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.up );
-		Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.up );
-		Vector3 leftRayDirection = leftRayRotation * aimDirection;
-		Vector3 rightRayDirection = rightRayRotation * aimDirection;
-		Gizmos.DrawRay( transform.position, leftRayDirection * viewDistance );
-		Gizmos.DrawRay( transform.position, rightRayDirection * viewDistance);
-		
-	}
 	
 	
 	

@@ -1,30 +1,30 @@
 fileFormatVersion: 2
-guid: 0670a6029cb5847e68c0481253e4bbb9
+guid: e59fac01baa2e49f8b50e0092c4cc237
 ModelImporter:
   serializedVersion: 15
   fileIDToRecycleName:
-    100000: Binder
+    100000: Basic_Wall
     100002: Camera
-    100004: Desk
-    100006: Directional_Light
+    100004: Directional_Light
+    100006: //RootNode
     100008: Environment__Image___Texture_
-    100010: //RootNode
-    100012: Render
-    100014: Texture_Group
-    400000: Binder
+    100010: Render
+    100012: Texture_Group
+    100014: Simple_Wall
+    400000: Basic_Wall
     400002: Camera
-    400004: Desk
-    400006: Directional_Light
+    400004: Directional_Light
+    400006: //RootNode
     400008: Environment__Image___Texture_
-    400010: //RootNode
-    400012: Render
-    400014: Texture_Group
-    2300000: Binder
-    2300002: Desk
-    3300000: Binder
-    3300002: Desk
-    4300000: Desk
-    4300002: Binder
+    400010: Render
+    400012: Texture_Group
+    400014: Simple_Wall
+    2300000: Basic_Wall
+    2300002: Simple_Wall
+    3300000: Basic_Wall
+    3300002: Simple_Wall
+    4300000: Basic_Wall
+    4300002: Simple_Wall
     9500000: //RootNode
   materials:
     importMaterials: 1

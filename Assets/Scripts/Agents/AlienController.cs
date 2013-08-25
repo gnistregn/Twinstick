@@ -36,7 +36,7 @@ public class AlienController : MonoBehaviour {
 	//public GameObject quarry;			// Current quarry
 	public bool quarryVisible = false;	// Can it see the quarry?
 	private float quarryTime = 0; // When did we last see our quarry?
-	private float quarryTimeout = 1f; // How many seconds after we can't see our quarry do we stop tracking it?
+	private float quarryTimeout = 3f; // How many seconds after we can't see our quarry do we stop tracking it?
 	
 	
 	private Vector3 quarryDirection;	// The direction of the quarry

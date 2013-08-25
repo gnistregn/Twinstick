@@ -20,7 +20,7 @@ public class Eyes : MonoBehaviour {
 	
 		halfFOV = totalFOV / 2;
 		worldThings = GameObject.FindGameObjectsWithTag("Discoverable_Item");
-		
+
 	}
 
 
@@ -61,6 +61,7 @@ public class Eyes : MonoBehaviour {
 		
 		}
 		
+					
 		
 		// If these eyes are on a player, let's discover world elements too
 		if (gameObject.tag == "Player") {

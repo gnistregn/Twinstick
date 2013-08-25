@@ -47,34 +47,48 @@ public class cMap : MonoBehaviour
 	public GameObject pfbHider;	// Prefab for black hider block
 	
 	
-	int level, levelWidth, levelHeight;
+	public int level, levelWidth, levelHeight;
 	int[,] tunnelMap;
-	byte[,] floorMap;
+	public byte[,] floorMap;
+	public byte[,] exploredMap;
 	byte[,] wallMapX;
 	byte[,] wallMapY;
 	int[,] pathMap;
 	int tunnelX, tunnelY, tunnelD, oldTunnelD, tunnelIndex;
 	int scx1, scy1, scd1, scx2, scy2, scd2;
 	int lastPathWeight;
-	int tunnelRoomIndexStart, levelSecretRoomCount = 0;
+	int tunnelRoomIndexStart = 0, levelSecretRoomCount = 0;
 	
+	public int statsFloorCount = 0, statsSecretCount = 0, statsFloorExploredCount = 0, statsSecretExploredCount = 0;
 	
 	void Start()
 	{
 		LoadFloorPrefabs();
 		LoadWallPrefabs();
 		
-		GenerateMap(2);
+		level = 1;
+		NextLevel();
+	}
+	
+	public void NextLevel()
+	{
+		foreach (Transform childTransform in GameObject.Find("World").transform) Destroy(childTransform.gameObject);
+		if (level < 100)	level++;
+		GenerateMap(level);
 		DrawMap();
 	}
 	
 	void GenerateMap(int in_level)
 	{
 		// level parameters
-		level = in_level;
+		//level = in_level;
 		levelWidth = 16 + level / 5 + Random.Range(0,3)-1;
 		levelHeight = 16 + level / 5 + Random.Range(0,3)-1;
 		levelSecretRoomCount = 0;
+		statsSecretCount = 0;
+		statsFloorCount = 0;
+		statsSecretExploredCount = 0;
+		statsFloorExploredCount = 0;
 
 		int maxCorridorTunnel1 = 6 + level/8;
 		int maxCorridorTunnel2 = 19 + level/6;
@@ -97,6 +111,7 @@ public class cMap : MonoBehaviour
 		floorMap = new byte[levelWidth,levelHeight];
 		pathMap = new int[levelWidth,levelHeight];
 		tunnelMap = new int[levelWidth,levelHeight];
+		exploredMap = new byte[levelWidth,levelHeight];
 		wallMapX = new byte[levelWidth+1,levelHeight+1];
 		wallMapY = new byte[levelWidth+1,levelHeight+1];
 		
@@ -113,6 +128,7 @@ public class cMap : MonoBehaviour
 				floorMap[i,j] = 0;
 				pathMap[i,j] = 0;
 				tunnelMap[i,j] = 0;
+				exploredMap[i,j] = 0;
 			}
 		tunnelIndex = 0;
 		
@@ -682,10 +698,8 @@ public class cMap : MonoBehaviour
 				if (i == scx1 && j == scy1) {
 					
 				} else {
-					
-					GameObject hider = Instantiate(pfbHider, new Vector3(i, 0.5f, j), Quaternion.identity) as GameObject;
-					hider.transform.parent = transform;
-					
+						GameObject hider = Instantiate(pfbHider, new Vector3(i, 0.5f, j), Quaternion.identity) as GameObject;
+						hider.transform.parent = transform;
 				}
 
 			}
@@ -712,6 +726,17 @@ public class cMap : MonoBehaviour
 				{		
 					go = pfbFloor[floorMap[i,j]];
 					if (go)	{
+						if (floorMap[i,j] == FLOOR_SECRET)
+							statsSecretCount++;
+						else if (floorMap[i,j] == FLOOR_START)
+						{
+						}
+						else
+						{
+							statsFloorCount++;
+							exploredMap[i,j] = 1;
+						}
+							
 						GameObject floorInstance = Instantiate(go, new Vector3(i, 0f, j), Quaternion.identity) as GameObject;
 						floorInstance.transform.parent = transform; // Set instance as child of World object
 					}
@@ -738,7 +763,12 @@ public class cMap : MonoBehaviour
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
 					go.transform.parent = transform; // Set instance as child of World object
+					go.collider.enabled = false;
 					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
+					// Ugly hack: spawn a raised wall that is impassible but through-seeable
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 1f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform;
+					go.renderer.enabled = false;
 				}
 
 				byte wmx1 = 0, wmx2 = 0;
@@ -814,7 +844,13 @@ public class cMap : MonoBehaviour
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity) as GameObject;
 					go.transform.parent = transform; // Set instance as child of World object
 					go.transform.Rotate(0,90,0);
+					go.collider.enabled = false;
 					go.renderer.material.color = new Color(0f, 1f, 0f, 1f);
+					// Ugly hack: spawn a raised wall that is impassible but through-seeable
+					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 1f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform;
+					go.transform.Rotate(0,90,0);
+					go.renderer.enabled = false;
 				}
 				
 			

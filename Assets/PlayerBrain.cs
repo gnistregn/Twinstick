@@ -22,7 +22,6 @@ public class PlayerBrain : MonoBehaviour {
 	public UILabel statusLabel;		// element for updating player GUI values
 	
 	
-	
 	public void Start () {
 		
 		UpdateStatusLabel();

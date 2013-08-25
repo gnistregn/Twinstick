@@ -15,7 +15,15 @@ public class DestroyOnSeen : MonoBehaviour {
 		}
 	}*/
 
+	private cWorldStats WS;
+	
+	private void Start()
+	{
+		WS = (cWorldStats)GameObject.Find("World").GetComponent("cWorldStats");
+	}
+	
 	public void Seen () {
+		if (WS)	WS.ExploreFloor((int)transform.position.x, (int)transform.position.z);
 		Destroy(gameObject);
 	}
 }

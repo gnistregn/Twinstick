@@ -7,6 +7,7 @@ public class Discoverable : MonoBehaviour {
 	public bool LockAfterDiscovery = false;
 	private bool discovered = false;
 	private Component[] renderers;
+	private float hideDelay = .2f;
 	
 //	private float alpha = 0;
 	private float visibility = 0;
@@ -25,6 +26,11 @@ public class Discoverable : MonoBehaviour {
 	}
 	
 	public void Unseen () {
+		StartCoroutine("Unsee");
+	}
+	
+	IEnumerator Unsee () {
+		yield return new WaitForSeconds(hideDelay);
 		if (!LockAfterDiscovery && discovered) visibility = 0;
 	}
 	
@@ -43,10 +49,12 @@ public class Discoverable : MonoBehaviour {
 				} else {*/
 					
 					if (visibility == 0) {
-						gameObject.SetActive(inverted);
+						r.enabled = false;
+						//gameObject.SetActive(inverted);
 					}
 					else {
-						gameObject.SetActive(!inverted);
+						r.enabled = true;
+						//gameObject.SetActive(!inverted);
 					}
 					
 				//}

@@ -45,6 +45,7 @@ public class AIPath : MonoBehaviour {
 	 * It can be a point on the ground where the player has clicked in an RTS for example, or it can be the player object in a zombie game.
 	 */
 	public Transform target;
+	public Vector3 targetVector;
 	
 	/** Enables or disables searching for paths.
 	 * Setting this to false does not stop any active path requests from being calculated or stop it from continuing to follow the current path.
@@ -59,7 +60,7 @@ public class AIPath : MonoBehaviour {
 	/** Maximum velocity.
 	 * This is the maximum speed in world units per second.
 	 */
-	public float speed = 3;
+	private float speed = 1;
 	
 	/** Rotation speed.
 	 * Rotation is calculated using Quaternion.SLerp. This variable represents the damping, the higher, the faster it will be able to rotate.
@@ -136,15 +137,29 @@ public class AIPath : MonoBehaviour {
 	
 	
 	
+	public void SetSpeed (float f) {
+		speed = f;
+	}
 	
 	public void SetQuarry (GameObject tgt) {
 		target = tgt.transform;
+		ClearTarget();
 		canSearch = true;
 	}
 	
+	public void SetTarget (Vector3 v) {
+		targetVector = v;
+		canSearch = true;
+	}
+		
+	
+	public void ClearTarget () {
+		targetVector = new Vector3(-999,0,0);
+		canSearch = false;
+	}
 	
 	public void ClearQuarry () {
-		canSearch = false;
+		target = null;
 	}
 	
 	
@@ -200,11 +215,21 @@ public class AIPath : MonoBehaviour {
 	
 	public void SearchPath () {
 		
-		if (target == null) { Debug.LogError ("Target is null, aborting all search"); return; }
+		//This is where we should search to
+		Vector3 targetPoint;
+		
+		if (target != null) {
+			targetPoint = target.position;
+		} else if (targetVector != null && targetVector.x >= 0) {
+			targetPoint = targetVector;
+		} else {
+			return;
+		}
+		
 		
 		lastRepath = Time.time;
-		//This is where we should search to
-		Vector3 targetPoint = target.position;
+		
+		
 		
 		canSearchAgain = false;
 		
@@ -220,6 +245,8 @@ public class AIPath : MonoBehaviour {
 		//add it here
 		//You can also create a new script which inherits from this one
 		//and override the function in that script
+		gameObject.SendMessage("TargetReached", SendMessageOptions.DontRequireReceiver);
+		targetVector = new Vector3(-999,0,0);
 	}
 	
 	/** Called when a requested path has finished calculation.

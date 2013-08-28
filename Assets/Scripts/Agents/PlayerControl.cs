@@ -37,7 +37,7 @@ public class PlayerControl : MonoBehaviour {
 		
 		controller = GetComponent<CharacterController>();
 	
-		
+		//Messenger.AddListener("Awake", DropItem);
 		
 		bodyDirection = new Vector3(1,0,0);
 		bodyTargetDirection = bodyDirection;
@@ -47,8 +47,6 @@ public class PlayerControl : MonoBehaviour {
 	
 		
 	}
-	
-	
 	
 	
 	void FixedUpdate () {

@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 using Pathfinding;
 
-public class cMap : MonoBehaviour
+
+public class CMap : MonoBehaviour
 {
 	const byte FLOOR_CORRIDOR			= 1;
 	const byte FLOOR_CUBICLE			= 2;
@@ -45,7 +46,9 @@ public class cMap : MonoBehaviour
 	public GameObject pfbCorner3;
 	
 	public GameObject pfbHider;	// Prefab for black hider block
+	public GameObject pfbEnemy;
 	
+	public bool discoveryMode = true; // Is the entire map covered in hiders or not?
 	
 	public int level, levelWidth, levelHeight;
 	int[,] tunnelMap;
@@ -61,22 +64,53 @@ public class cMap : MonoBehaviour
 	
 	public int statsFloorCount = 0, statsSecretCount = 0, statsFloorExploredCount = 0, statsSecretExploredCount = 0;
 	
+	private GameMaster gameMaster;
+	
+	
 	void Start()
 	{
 		LoadFloorPrefabs();
 		LoadWallPrefabs();
 		
-		level = 1;
-		NextLevel();
+		GameObject go = GameObject.Find("Game Master");
+		
+		if (go == null) 
+		{
+			Application.LoadLevel("Start");
+		}
+		else 
+		{
+			gameMaster = go.GetComponent<GameMaster>();
+			level = gameMaster.currentLevel;
+			NewLevel();
+		}
 	}
 	
-	public void NextLevel()
+	public void NewLevel()
 	{
-		foreach (Transform childTransform in GameObject.Find("World").transform) Destroy(childTransform.gameObject);
-		if (level < 100)	level++;
+	//	foreach (Transform childTransform in GameObject.Find("World").transform) Destroy(childTransform.gameObject);
 		GenerateMap(level);
 		DrawMap();
+		GenerateEnemies(); // Make some enemies!
 	}
+	
+	
+	
+	
+	
+	private void GenerateEnemies () 
+	{
+		for (int i = 0; i < 10; i++) 
+		{
+			Vector3 enemyStartPoint = GetRandomSquareOfType(1); // Enemy starts in a random piece of corridor
+			GameObject e = Instantiate(pfbEnemy, enemyStartPoint, Quaternion.AngleAxis(Random.Range(0,360), Vector3.up)) as GameObject;
+			e.name = "Enemy " + i;
+		}
+	}
+	
+	
+	
+	
 	
 	void GenerateMap(int in_level)
 	{
@@ -650,7 +684,6 @@ public class cMap : MonoBehaviour
 		
 		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1); // Set player start position
 		
-		GameObject.Find("Enemy").transform.position = new Vector3(scx1 + 4, 0, scy1); // Ful-set enemy start position
 
 	}
 	
@@ -685,28 +718,36 @@ public class cMap : MonoBehaviour
 		pfbFloor[FLOOR_UNKNOWN] = (GameObject)Resources.Load("floors/pfbFloorUnknown");
 	}
 
+
+
 	void DrawMap()
 	{
 		
 
 
 		// Blanket the entire map in black hider blocks
-		for (int i = -1; i < levelWidth + 1; i++) {
+		if (discoveryMode) 
+		{
+			
+			for (int i = -1; i < levelWidth + 1; i++) {
 
-			for (int j = -1; j < levelHeight + 1; j++) {
-				
-				if (i == scx1 && j == scy1) {
-					
-				} else {
-						GameObject hider = Instantiate(pfbHider, new Vector3(i, 0.5f, j), Quaternion.identity) as GameObject;
-						hider.transform.parent = transform;
+				for (int j = -1; j < levelHeight + 1; j++) {
+
+					if (i == scx1 && j == scy1) {
+
+					} else {
+							GameObject hider = Instantiate(pfbHider, new Vector3(i, 0.5f, j), Quaternion.identity) as GameObject;
+							hider.transform.parent = transform;
+					}
+
 				}
 
 			}
 
+			
+			
 		}
-		
-		
+
 		
 		
 
@@ -882,7 +923,29 @@ public class cMap : MonoBehaviour
 		
 		AstarPath.active.Scan();
 		
+		
 	}
+	
+	
+	public Vector3 GetRandomSquareOfType (byte type) 
+	{
+		Vector3 coord = new Vector3(0,0,0);
+		byte foundType = 0;
+		int rX, rZ;
+		while (foundType != type) {
+			rX = Random.Range(0, levelWidth);
+			rZ = Random.Range(0, levelHeight);
+			foundType = floorMap[rX, rZ];
+			if (foundType == type) {
+				coord.x = rX;
+				coord.z = rZ;
+			}
+		}
+		
+		return coord;
+	}
+	
+	
 	
 	void Update()
 	{

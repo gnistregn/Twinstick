@@ -6,7 +6,7 @@ public class cWorldStats : MonoBehaviour
 
 	public UILabel statusLabel;		// element for updating world GUI values
 	public UILabel nextFloorLabel;
-	private cMap MAP;
+	private CMap MAP;
 	private bool countExploredFloors = false;
 	private int tempCount = 0;
 
@@ -14,9 +14,15 @@ public class cWorldStats : MonoBehaviour
 	
 	private GameObject[] allPlayers;
 	
+	private GameMaster gameMaster;
+	
 	void Start()
 	{
-		MAP = (cMap)GetComponent("cMap");
+		MAP = (CMap)GetComponent("CMap");
+		
+		GameObject go = GameObject.Find("Game Master");
+		if (go != null) gameMaster = go.GetComponent<GameMaster>();
+		
 	}
 	
 	void Update()
@@ -59,7 +65,9 @@ public class cWorldStats : MonoBehaviour
 	void DummyNextLevel()
 	{
 		Debug.Log("Next level!");
-		MAP.NextLevel();
+		gameMaster.GoUpLevel();
+	//	Application.LoadLevel("Newlevel");
+	//	MAP.NextLevel();
 	}
 	
 	void UpdateNextFloorLabel()

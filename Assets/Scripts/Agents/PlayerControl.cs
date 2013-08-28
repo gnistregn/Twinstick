@@ -54,36 +54,39 @@ public class PlayerControl : MonoBehaviour {
 	void FixedUpdate () {
 		
 
-
+		// Input axii (?)
 		float hA = 0;
 		float vA = 0;
 		float hB = 0;
 		float vB = 0;
 
 		if (debug) {
-
+			
+			// Use keyboard controls to move
 			hA = Input.GetAxis("Keyboard Horizontal");
 			vA = Input.GetAxis("Keyboard Vertical");
 
 		} else {
 			
+			// OSX + Xbox controls
 			hA = Input.GetAxis("Horizontal A");
 			vA = Input.GetAxis("Vertical A");
 			hB = Input.GetAxis("Horizontal B");
 			vB = Input.GetAxis("Vertical B");
 			
-		}
- 		
- 		if (Input.GetAxis("Fire") > 0) {
-			gun.SendMessage("Trigger");
+			if (Input.GetAxis("Fire") > 0) {
+				gun.SendMessage("Trigger");
+			}
 
+
+			if (Input.GetAxis("Fire") < 0) {
+				gun.SendMessage("Release");
+			}
+			
 		}
-		
-		if (Input.GetAxis("Fire") < 0) {
-			gun.SendMessage("Release");
-		}
-		
-		
+
+ 		
+ 		
 		
 		/* --- MOVE --- */
 		

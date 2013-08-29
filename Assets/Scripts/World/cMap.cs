@@ -45,6 +45,10 @@ public class CMap : MonoBehaviour
 	public GameObject pfbCorner2_2;
 	public GameObject pfbCorner3;
 	
+	public GameObject pfbDoorway;
+	public GameObject pfbDoor;
+	
+	
 	public GameObject pfbHider;	// Prefab for black hider block
 	public GameObject pfbEnemy;
 	
@@ -88,10 +92,9 @@ public class CMap : MonoBehaviour
 	
 	public void NewLevel()
 	{
-	//	foreach (Transform childTransform in GameObject.Find("World").transform) Destroy(childTransform.gameObject);
 		GenerateMap(level);
 		DrawMap();
-		GenerateEnemies(); // Make some enemies!
+		//GenerateEnemies(); // Make some enemies!
 	}
 	
 	
@@ -789,10 +792,10 @@ public class CMap : MonoBehaviour
 				} 
 				else if (wallMapX[i,j] == WALL_DOOR)
 				{
-					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go = (GameObject)Instantiate(pfbDoorway, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
 					go.transform.parent = transform; // Set instance as child of World object
-					go.collider.enabled = false;
-					go.renderer.material.color = new Color(1f, 0f, 0f, 1f);
+					go = (GameObject)Instantiate(pfbDoor, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
+					go.transform.parent = transform; // Set instance as child of World object
 				}
 				else if (wallMapX[i,j] == WALL_BREAKABLE)
 				{
@@ -867,11 +870,13 @@ public class CMap : MonoBehaviour
 				}
 				else if (wallMapY[i,j] == WALL_DOOR)
 				{
-					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
+					
+					go = (GameObject)Instantiate(pfbDoorway, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.AngleAxis(90, Vector3.up));
 					go.transform.parent = transform; // Set instance as child of World object
-					go.transform.Rotate(0,90,0);
-					go.collider.enabled = false;
-					go.renderer.material.color = new Color(1f, 0f, 0f, 1f);
+					go = (GameObject)Instantiate(pfbDoor, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.AngleAxis(90, Vector3.up));
+					go.transform.parent = transform; // Set instance as child of World object
+					
+					
 				}
 				else if (wallMapY[i,j] == WALL_BREAKABLE)
 				{

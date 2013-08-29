@@ -69,11 +69,12 @@ public class PlayerControl : MonoBehaviour {
 
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				GameObject n = GetComponent<PlayerEyes>().closestInteractible;
+				float dist = GetComponent<PlayerEyes>().closestInteractibleDistance;
 				if (n != null) {
-					if (Vector3.Distance(n.transform.position, transform.position) < interactionReach) {
+					if (dist < interactionReach) {
 						n.SendMessage("Interact");
 					} else {
-						print ("Too far away");
+						print ("Too far away from " + n.name);
 					}
 				}
 				

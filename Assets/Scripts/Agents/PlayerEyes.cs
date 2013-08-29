@@ -19,12 +19,21 @@ public class PlayerEyes : MonoBehaviour {
 	// Save if something is interactive in our vicinity
 	GameObject closestInteractibleThing;
 	float closestInteractibleAngle;
+	float closestInteractibleDist;
 	
 	public GameObject closestInteractible {
-		get {
-			return closestInteractibleThing;
-		}
+		get { return closestInteractibleThing; }
 	}
+	
+	public float closestInteractibleDistance {
+		get { return closestInteractibleDist; }
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	// Player specific variables
@@ -35,21 +44,28 @@ public class PlayerEyes : MonoBehaviour {
 	void Start () {
 	
 		halfFOV = totalFOV / 2;
-
+		
+		// Auto-refreshing the list of things we can discover
 		StartCoroutine("RefreshDiscoverables");
 		
 	}
 
+	
 	IEnumerator RefreshDiscoverables () 
 	{
+		// Reconstruct the list of things
 		discoverables = new List<GameObject>();
+		
+		// Find all things in the world that are discoverable
 		Discoverable[] discoverableComponents = FindObjectsOfType<Discoverable>();
 		
+		// For each thing, add its gameobject to the list
 		foreach (Discoverable d in discoverableComponents) 
 		{
 			discoverables.Add(d.gameObject);
 		}
 		
+		// Wait a bit and then run again
 		yield return new WaitForSeconds(discoverableRefreshTimeout);
 		StartCoroutine("RefreshDiscoverables");
 		
@@ -62,6 +78,7 @@ public class PlayerEyes : MonoBehaviour {
 		
 		closestInteractibleThing = null;
 		closestInteractibleAngle = 999;
+		closestInteractibleDist = 999;
 		
 		// What items can these eyes see?
 		if (discoverables != null) {
@@ -96,20 +113,29 @@ public class PlayerEyes : MonoBehaviour {
 					
 					
 					
-					// Throw a ray towards the thing
+					
 					RaycastHit hit;
 					float thingAngle = Vector3.Angle(Vector3.Scale(rayDirection, new Vector3(1,0,1)), Vector3.Scale(head.forward, new Vector3(1,0,1)));
 					
+					// If the thing is within our field of view...
 					if (thingAngle < halfFOV) {
+						// Throw a ray towards the thing
 						Physics.Raycast(head.position, rayDirection, out hit);
+						// If we hit it...
 						if (hit.transform.gameObject == thing) {
-							Debug.DrawRay(head.position, hit.point - head.position, Color.cyan);
+							
+							// It's been spotted
 							thingSeen = true;
 							
+							Debug.DrawRay(head.position, hit.point - head.position, Color.cyan);
+							
+							float thingDist = Vector3.Distance(head.position, hit.point);
+							
 							// Is it something we can interact with?
-							if (thing.GetComponent<Interactible>() != null && thingAngle < closestInteractibleAngle) {
+							if (thing.GetComponent<Interactible>() != null && thingDist < closestInteractibleDist) {
 								closestInteractibleAngle = thingAngle;
 								closestInteractibleThing = thing;
+								closestInteractibleDist = thingDist;
 							}
 							
 						} else {
@@ -170,17 +196,21 @@ public class PlayerEyes : MonoBehaviour {
 			Quaternion dir = Quaternion.AngleAxis(-halfFOV + totalFOV * i / worldDiscoveryRays, Vector3.up);
 			worldRay = dir * head.forward;
 			worldRay = worldRay.normalized;
+			Vector3 rayStart = head.position;
 			worldRayEnd = head.position + worldRay * worldDiscoveryDistance;
-			//if (debug) Debug.DrawRay(head.position, worldRay * worldDiscoveryDistance, new Color(1,1,0,0.55f));
+			if (debug) Debug.DrawRay(rayStart, worldRay * worldDiscoveryDistance, new Color(0,1,0.5f));
 			RaycastHit hit;
-			Physics.Raycast(head.position, worldRay, out hit, worldDiscoveryDistance);
+			int mask = ~((1 << 12));
+			Physics.Raycast(head.position, worldRay, out hit, worldDiscoveryDistance, mask);
 			
 			if (hit.transform != null) 
 			{
+		
 				if (hit.transform.gameObject.tag == "Hider") 
 				{
 					hit.transform.gameObject.SendMessage("Seen", SendMessageOptions.DontRequireReceiver);
-					//if (debug) Debug.DrawRay(head.position, hit.point - head.position, new Color(1,1,0,0.5f));
+					if (debug) Debug.DrawRay(head.position, hit.point - head.position, new Color(1,1,0,1f));
+					
 					worldRayEnd = hit.point;
 				}			
 			}

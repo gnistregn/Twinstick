@@ -18,6 +18,16 @@ public class DoorControl : MonoBehaviour {
 		spr = hingeJoint.spring;
 		defaultBounds = collider.bounds;
 		defaultBounds.size *= 1.2f;
+		
+		if (reverseDirection) 
+		{
+			hingeJoint.anchor = new Vector3(hingeJoint.anchor.x, hingeJoint.anchor.y, -hingeJoint.anchor.z);
+			JointLimits limits = hingeJoint.limits;
+			limits.min = -160;
+			limits.max = 0;
+			//hingeJoint.limits = limits;
+		}
+		
 	}
 	
 
@@ -42,17 +52,18 @@ public class DoorControl : MonoBehaviour {
 		hingeJoint.spring = spr;
 	}
 	
+	
 	public void Update () {
-		float dist = Mathf.Abs(spr.targetPosition - transform.localEulerAngles.y);
-		if (dist < 1) {
+		float dist = Mathf.Abs(transform.localEulerAngles.y - spr.targetPosition) * Mathf.Deg2Rad;
+		if (dist < .01f) {
 			if (refreshState) {
-				if (spr.targetPosition == 0) open = false;
-				else open = true;
+				//if (spr.targetPosition == 0) open = false;
+				//else open = true;
 				Debug.Log("Refreshing");
 				refreshState = false;
 				AstarPath.active.UpdateGraphs (defaultBounds);
 				
-				if (!open) rigidbody.isKinematic = true;
+				//if (!open) rigidbody.isKinematic = true;
 
 				
 				

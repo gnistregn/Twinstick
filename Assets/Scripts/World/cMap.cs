@@ -682,7 +682,7 @@ public class CMap : MonoBehaviour
 		pathMap[in_x, in_y] = 1;
 		lastPathWeight = 1;
 		
-		GameObject.Find("Player").transform.position = new Vector3(scx1, 0, scy1); // Set player start position
+		GameObject.Find("Player 1").transform.position = new Vector3(scx1, 0, scy1); // Set player start position
 		
 
 	}

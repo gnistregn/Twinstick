@@ -20,6 +20,9 @@ public class PlayerControl : MonoBehaviour {
 	
 	public bool debug = true;
 
+	public float interactionReach = 1f;
+
+
 	public Transform torso;
 	public Transform legs;
 	public Transform gun;
@@ -64,6 +67,19 @@ public class PlayerControl : MonoBehaviour {
 			hA = Input.GetAxis("Keyboard Horizontal");
 			vA = Input.GetAxis("Keyboard Vertical");
 
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				GameObject n = GetComponent<PlayerEyes>().closestInteractible;
+				if (n != null) {
+					if (Vector3.Distance(n.transform.position, transform.position) < interactionReach) {
+						n.SendMessage("Interact");
+					} else {
+						print ("Too far away");
+					}
+				}
+				
+			}
+
+
 		} else {
 			
 			// OSX + Xbox controls
@@ -80,6 +96,9 @@ public class PlayerControl : MonoBehaviour {
 			if (Input.GetAxis("Fire") < 0) {
 				gun.SendMessage("Release");
 			}
+			
+		
+			
 			
 		}
 
@@ -116,8 +135,12 @@ public class PlayerControl : MonoBehaviour {
 
 		
 		// Move character
-		//transform.Translate(bodyDirection * Time.deltaTime * moveSpeed);
-		controller.Move(bodyDirection * Time.deltaTime * moveSpeed);
+		Vector3 moveDirection = bodyDirection * moveSpeed; 
+		moveDirection.y -= -Physics.gravity.y; // Apply gravity
+		controller.Move(moveDirection * Time.deltaTime);
+		
+		
+		
 		// Draw debug ray
 		Debug.DrawRay(transform.position, bodyTargetDirection, Color.green);
 

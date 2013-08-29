@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Discoverable : MonoBehaviour {
 
+	public bool forceDiscovered = false;
 	public bool inverted = false;
 	public bool LockAfterDiscovery = false;
 	private bool discovered = false;
@@ -18,6 +19,7 @@ public class Discoverable : MonoBehaviour {
 	public void Start () {
 		renderers = GetComponentsInChildren<Renderer>();
 //		alphaTarget = 0;
+		if (forceDiscovered) Seen();
 	}
 
 	public void Seen () {
@@ -26,7 +28,7 @@ public class Discoverable : MonoBehaviour {
 	}
 	
 	public void Unseen () {
-		StartCoroutine("Unsee");
+		if (!forceDiscovered) StartCoroutine("Unsee");
 	}
 	
 	IEnumerator Unsee () {

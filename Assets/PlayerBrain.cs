@@ -15,26 +15,20 @@ public class PlayerBrain : MonoBehaviour {
 	public int hitPoints = 100;		// current HP
 	public int maxHitPoints = 100;	// max HP
 	public int expPoints = 0;		// current XP
-	public int level = 0;			// current level
-	private int nextLevel = 100;	// how many XP required for next level
+	public int level = 1;			// current level
+	public int kills = 0;
+	private int nextLevelPoints = 300;	// how many XP required for next level
 	
 	
-	public UILabel statusLabel;		// element for updating player GUI values
 	
-	
-	public void Start () {
-		
-		UpdateStatusLabel();
-		
+	public int nextLevel {
+		get {
+			return nextLevelPoints;
+		}
 	}
 	
 	
-	
-	
-	// Det här ska inte skötas från spelaren. Snarare ska grafiken sköta sig själv.
-	public void UpdateStatusLabel () {
-		
-		if (statusLabel != null) statusLabel.text = hitPoints + "/" + maxHitPoints + "\n" + expPoints + "/" + nextLevel + "\n" + 99;
+	public void Start () {
 		
 	}
 	

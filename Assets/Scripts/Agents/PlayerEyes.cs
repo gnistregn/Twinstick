@@ -16,6 +16,15 @@ public class PlayerEyes : MonoBehaviour {
 	private int worldDiscoveryDistance = 20; // How far do these rays go?
 	
 	
+	// Save if something is interactive in our vicinity
+	GameObject closestInteractibleThing;
+	float closestInteractibleAngle;
+	
+	public GameObject closestInteractible {
+		get {
+			return closestInteractibleThing;
+		}
+	}
 	
 	
 	// Player specific variables
@@ -47,30 +56,27 @@ public class PlayerEyes : MonoBehaviour {
 	}
 
 
-	public static T[] FindObjectsOfType<T>()
-
-	{
-
-	   T[] objects = UnityEngine.Object.FindObjectsOfType(typeof(T)) as T[];
-
-	   return objects;
-
-	}
 
 	
 	void FixedUpdate () {
 		
-
+		closestInteractibleThing = null;
+		closestInteractibleAngle = 999;
 		
 		// What items can these eyes see?
 		if (discoverables != null) {
 			
+			
+			// Iterate through our list of discoverables in the world
 			foreach (GameObject thing in discoverables) {
 
+				// If this thing actually exists...
 				if (thing != null) {
 					
+					// So far we haven't seen what we're looking for
 					bool thingSeen = false;
 					
+					// In what direction does the thing lie?
 					Vector3 rayDirection = thing.transform.position - head.position;
 
 					// Special stuff for enemies as discoverables
@@ -79,18 +85,33 @@ public class PlayerEyes : MonoBehaviour {
 					{	
 						rayDirection += new Vector3(0,0.5f,0);
 					}
-					
+
+
+
+					// Show debug info
 					if (debug) {
 						Debug.DrawRay(head.position, rayDirection, Color.blue);
 						Debug.DrawRay(head.position, head.forward, Color.red);
 					}
 					
+					
+					
+					// Throw a ray towards the thing
 					RaycastHit hit;
-					if (Vector3.Angle(rayDirection, head.forward) < halfFOV) {
+					float thingAngle = Vector3.Angle(Vector3.Scale(rayDirection, new Vector3(1,0,1)), Vector3.Scale(head.forward, new Vector3(1,0,1)));
+					
+					if (thingAngle < halfFOV) {
 						Physics.Raycast(head.position, rayDirection, out hit);
 						if (hit.transform.gameObject == thing) {
 							Debug.DrawRay(head.position, hit.point - head.position, Color.cyan);
 							thingSeen = true;
+							
+							// Is it something we can interact with?
+							if (thing.GetComponent<Interactible>() != null && thingAngle < closestInteractibleAngle) {
+								closestInteractibleAngle = thingAngle;
+								closestInteractibleThing = thing;
+							}
+							
 						} else {
 							thingSeen = false;
 						}
@@ -99,6 +120,7 @@ public class PlayerEyes : MonoBehaviour {
 					}
 					
 					
+					// If the thing we're looking for is tagged as an enemy
 					if (thing.tag == "Enemy") 
 					{
 						// If the enemy is superclose...
@@ -112,22 +134,68 @@ public class PlayerEyes : MonoBehaviour {
 					}
 					
 					
+					
+					
+					
+					// Tell the thing that we're either seeing it or not
 					if (thingSeen) thing.SendMessage("Seen", SendMessageOptions.DontRequireReceiver);
 					else thing.SendMessage("Unseen", SendMessageOptions.DontRequireReceiver);
 
 				}
+				
+	
+				
 
 			}
+			
+			
+			
+			
 		
 		}
 		
 					
 	
+		
+		
+		// World Discovery
+		
 		Vector3 worldRay;
 		Vector3 worldRayEnd;
 		
-		if (debug) {
 		
+		for (int i = 0; i <= worldDiscoveryRays; i++) 
+		{	
+			// Eye level world discovery. For walls, door, etc.
+			Quaternion dir = Quaternion.AngleAxis(-halfFOV + totalFOV * i / worldDiscoveryRays, Vector3.up);
+			worldRay = dir * head.forward;
+			worldRay = worldRay.normalized;
+			worldRayEnd = head.position + worldRay * worldDiscoveryDistance;
+			//if (debug) Debug.DrawRay(head.position, worldRay * worldDiscoveryDistance, new Color(1,1,0,0.55f));
+			RaycastHit hit;
+			Physics.Raycast(head.position, worldRay, out hit, worldDiscoveryDistance);
+			
+			if (hit.transform != null) 
+			{
+				if (hit.transform.gameObject.tag == "Hider") 
+				{
+					hit.transform.gameObject.SendMessage("Seen", SendMessageOptions.DontRequireReceiver);
+					//if (debug) Debug.DrawRay(head.position, hit.point - head.position, new Color(1,1,0,0.5f));
+					worldRayEnd = hit.point;
+				}			
+			}
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		if (debug) 
+		{
 			Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.up );
 			Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.up );
 			Vector3 leftRayDirection = leftRayRotation * head.forward;
@@ -137,31 +205,23 @@ public class PlayerEyes : MonoBehaviour {
 		}
 		
 		
-		for (int i = 0; i <= worldDiscoveryRays; i++) {
-			
-			// Eye level world discovery. For walls, door, etc.
-			Quaternion dir = Quaternion.AngleAxis(-halfFOV + totalFOV * i / worldDiscoveryRays, Vector3.up);
-			worldRay = dir * head.forward;
-			worldRay = worldRay.normalized;
-			worldRayEnd = head.position + worldRay * worldDiscoveryDistance;
-			//if (debug) Debug.DrawRay(head.position, worldRay * worldDiscoveryDistance, new Color(1,1,0,0.55f));
-			RaycastHit hit;
-			Physics.Raycast(head.position, worldRay, out hit, worldDiscoveryDistance);
-			if (hit.transform != null) {
-				if (hit.transform.gameObject.tag == "Hider") {
-					hit.transform.gameObject.SendMessage("Seen", SendMessageOptions.DontRequireReceiver);
-					//if (debug) Debug.DrawRay(head.position, hit.point - head.position, new Color(1,1,0,0.5f));
-					worldRayEnd = hit.point;
-				}			
-			}
-			
-	
-		}
 		
 		
 		
-	
+		
+		
+		
 		
 		
 	}
+	
+	
+	public static T[] FindObjectsOfType<T>()
+	{
+	   T[] objects = UnityEngine.Object.FindObjectsOfType(typeof(T)) as T[];
+	   return objects;
+	}
+	
+	
+	
 }

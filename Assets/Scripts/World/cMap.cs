@@ -5,29 +5,29 @@ using Pathfinding;
 
 public class CMap : MonoBehaviour
 {
-	const byte FLOOR_CORRIDOR			= 1;
-	const byte FLOOR_CUBICLE			= 2;
-	const byte FLOOR_LUNCH				= 3;
-	const byte FLOOR_KITCHEN			= 4;
-	const byte FLOOR_TOILET				= 5;
-	const byte FLOOR_IT						= 6;
-	const byte FLOOR_SERVERS			= 7;
-	const byte FLOOR_CONFERENCE		= 8;
-	const byte FLOOR_CLOSET				= 9;
-	const byte FLOOR_COPY					= 10;
-	const byte FLOOR_FREEZER			= 11;	// Attach to Kitchen (which is attached to Lunch Room) :D
-	const byte FLOOR_MAIL					= 12;
-	const byte FLOOR_SUPPLIES			= 13;
-	const byte FLOOR_SECRET				= 14;
+	public const byte FLOOR_CORRIDOR			= 1;
+	public const byte FLOOR_CUBICLE			= 2;
+	public const byte FLOOR_LUNCH				= 3;
+	public const byte FLOOR_KITCHEN			= 4;
+	public const byte FLOOR_TOILET				= 5;
+	public const byte FLOOR_IT						= 6;
+	public const byte FLOOR_SERVERS			= 7;
+	public const byte FLOOR_CONFERENCE		= 8;
+	public const byte FLOOR_CLOSET				= 9;
+	public const byte FLOOR_COPY					= 10;
+	public const byte FLOOR_FREEZER			= 11;	// Attach to Kitchen (which is attached to Lunch Room) :D
+	public const byte FLOOR_MAIL					= 12;
+	public const byte FLOOR_SUPPLIES			= 13;
+	public const byte FLOOR_SECRET				= 14;
 
-	const byte FLOOR_RELAX							= 15;
-	const byte FLOOR_BAR								= 16;
-	const byte FLOOR_CEO								= 17;
-	const byte FLOOR_MIDDLE_MANAGEMENT 	= 18;
+	public const byte FLOOR_RELAX							= 15;
+	public const byte FLOOR_BAR								= 16;
+	public const byte FLOOR_CEO								= 17;
+	public const byte FLOOR_MIDDLE_MANAGEMENT 	= 18;
 
-	const byte FLOOR_START					= 252;
-	const byte FLOOR_END						= 253;
-	const byte FLOOR_UNKNOWN				= 254;
+	public const byte FLOOR_START					= 252;
+	public const byte FLOOR_END						= 253;
+	public const byte FLOOR_UNKNOWN				= 254;
 	
 	const byte WALL_SOLID					= 1;
 	const byte WALL_DOOR					= 2;
@@ -94,7 +94,7 @@ public class CMap : MonoBehaviour
 	{
 		GenerateMap(level);
 		DrawMap();
-		//GenerateEnemies(); // Make some enemies!
+		GenerateEnemies(); // Make some enemies!
 	}
 	
 	
@@ -105,7 +105,7 @@ public class CMap : MonoBehaviour
 	{
 		for (int i = 0; i < 10; i++) 
 		{
-			Vector3 enemyStartPoint = GetRandomSquareOfType(1); // Enemy starts in a random piece of corridor
+			Vector3 enemyStartPoint = GetRandomSquareOfType(CMap.FLOOR_CORRIDOR); // Enemy starts in a random piece of corridor
 			GameObject e = Instantiate(pfbEnemy, enemyStartPoint, Quaternion.AngleAxis(Random.Range(0,360), Vector3.up)) as GameObject;
 			e.name = "Enemy " + i;
 		}
@@ -801,7 +801,7 @@ public class CMap : MonoBehaviour
 				{
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2+.5f, 0f, j2-.5f), Quaternion.identity);
 					go.transform.parent = transform; // Set instance as child of World object
-					go.renderer.material.color = new Color(0f, 0f, 0f, 1f);
+					go.renderer.material.color = new Color(.5f, .5f, .5f, 1f);
 				}
 				else if (wallMapX[i,j] == WALL_WINDOW)
 				{
@@ -883,7 +883,7 @@ public class CMap : MonoBehaviour
 					go = (GameObject)Instantiate(pfbSolidWall, new Vector3(i2-.5f, 0f, j2-.5f), Quaternion.identity);
 					go.transform.parent = transform; // Set instance as child of World object
 					go.transform.Rotate(0,90,0);
-					go.renderer.material.color = new Color(0f, 0f, 0f, 1f);
+					go.renderer.material.color = new Color(0.5f, 0.5f, 0.5f, 1f);
 				}
 				else if (wallMapY[i,j] == WALL_WINDOW)
 				{

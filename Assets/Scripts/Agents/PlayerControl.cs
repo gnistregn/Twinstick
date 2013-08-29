@@ -122,7 +122,7 @@ public class PlayerControl : MonoBehaviour {
 		bodyDirection = Vector3.RotateTowards(bodyDirection, bodyTargetDirection, 10f * Time.deltaTime, 1000);
 
 		// Move speed
-		float moveSpeed = targetDirection.magnitude * 3;
+		float moveSpeed = targetDirection.magnitude * 1;
 
 		// Move slower when aiming backwards
 		if (Vector3.Dot(bodyDirection, aimDirection) < 0) {

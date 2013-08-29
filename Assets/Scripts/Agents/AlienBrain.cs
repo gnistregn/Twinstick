@@ -41,18 +41,17 @@ public class AlienBrain : MonoBehaviour {
 	private Vector3 quarryDirection;	// The direction of the quarry
 	
 	
-	// AI
+	// AI - Different states of mind
 	const byte IDLE = 0;
 	const byte PATROL = 1;
 	const byte CHASE = 2;
 	const byte LOOKING = 3;
 	
-	
-	private int state = IDLE;
-	private float lookingTimeout = 3f;
-	private float lookingTime = 0f;
-	private float idleTimeout = 3f;
-	private float idleTime = 0;
+	private int state = IDLE;			// Default state of mind
+	private float lookingTimeout = 3f;	// How long should it be looking before deciding to do something else?
+	private float lookingTime = 0f;		// When we started looking
+	private float idleTimeout = 3f;		// How long should it idle before doing something else?
+	private float idleTime = 0;			// When we started idling
 	
 	
 	// PATHFINDING
@@ -69,84 +68,109 @@ public class AlienBrain : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		Messenger.AddListener("NewLevel", SelfDestruct);
-
 		// Gain knowledge of the world
 		GameObject go = GameObject.Find("World");
 		map = go.GetComponent<CMap>() as CMap;
 
 		// Assemble list of players
+		// *This should really be updated automatically now and then*
 		players = GameObject.FindGameObjectsWithTag("Player");
-			
-		foreach (GameObject player in players) {
-//			Debug.Log("Player found: " + player.name);
-		}
-		
 
-
-
+		// Set this FOV variable
 		halfFOV = totalFOV / 2;
 
+		// We'll need to call these pathfinding and movement-related components
 		seeker = GetComponent<Seeker>();
 		controller = GetComponent<CharacterController>();
 		aiPath = GetComponent<AIPath>();
 
+		// Where we are looking
 		lookDirection = transform.forward;
+		
+		// Where we should look
 		lookTargetDirection = lookDirection;
 		
 		
 	}
 	
 	
-	private void SelfDestruct () {
-//	//	Debug.Log("Self-destructing " + gameObject.name);
-//		Destroy(gameObject);
-	}
 	
-	
-	public void TakeDamage (int amount) {
-		Debug.Log("Took damage " + amount);
+	// Deal with damage taken
+	public void TakeDamage (int amount) 
+	{
+		
 		hitPoints -= amount;
+		
 		if (hitPoints < 0) {
+			// Outright destroy this gameobject if HP < 0
 			Destroy(gameObject);
 		}
+		
 	}
 	
 	
-	
-	public void TargetReached () {
+	// Called whenever the enemy reaches the end of a path
+	public void TargetReached () 
+	{
+		
 		Debug.Log("Enemy reached target");
+		
+		// Start idling
 		StateIdle();
+		
 	}
 	
-	
-	private void StateIdle () {
+	// Go into IDLE mode
+	private void StateIdle () 
+	{
+		// Set start time of our idling
 		idleTime = Time.time;
+		// Set state to IDLE
 		state = IDLE;
+		// Reset to walking speed
 		aiPath.SetSpeed(walkSpeed);
+		
 	}
 	
-	private void StatePatrol () {
+	private void StatePatrol () 
+	{
+		// Set state to PATROL
 		state = PATROL;
+		// Reset to walking speed
 		aiPath.SetSpeed(walkSpeed);
-		Vector3 p = map.GetRandomSquareOfType(1);
-		Debug.Log("Test: " + p);
+		// Walk to a random corridor square
+		Vector3 p = map.GetRandomSquareOfType(CMap.FLOOR_CORRIDOR);
+		// Ok, let's move!
 		aiPath.SetTarget(p);
 	}
 	
-	private void StateChase () {
-		// If we haven't set quarryVisible to true yet...
-		aiPath.SetSpeed(runSpeed);
-		Debug.Log("Spotted an enemy");
-		state = CHASE;
+	
+	private void StateLooking () 
+	{
+		// Set state to LOOKING
+		state = LOOKING;
+		// Save looking time
+		lookingTime = Time.time;
+		
 	}
+	
+	private void StateChase () 
+	{
+		// Set state to CHASE
+		state = CHASE;
+		// Reset to running speed
+		aiPath.SetSpeed(runSpeed);
+	}
+	
+	
 	
 	public void FixedUpdate () {
 		
 		
-		// AI
+		// If it's been idling for long enough...
 		if (state == IDLE && Time.time > idleTime + idleTimeout) 
 		{
+			// Start patrolling
 			StatePatrol();
 		}
 		
@@ -157,15 +181,18 @@ public class AlienBrain : MonoBehaviour {
 		
 		
 		
-		// If enough time has passed to have considered lost the quarry
+		// If it's chasing a player, but enough time has passed to have considered lost its quarry...
 		if (quarryVisible && Time.time > quarryTime + quarryTimeout) 
 		{
+			// We can definitely say we're not seeing the player anymore
 			quarryVisible = false;
-			Debug.Log("Lost track of quarry");
-			// Remove current target from the pathfinder
+
+			// Remove current target from the pathfinder, stopping it in its tracks
 			aiPath.ClearQuarry();
-			state = LOOKING;
-			lookingTime = Time.time;
+			
+			// Let's look around
+			StateLooking();
+			
 		}
 		
 		
@@ -183,19 +210,21 @@ public class AlienBrain : MonoBehaviour {
 				}	
 			}
 
-			// When was the last time we saw our quarry?
+			// Save the last time we saw our quarry
 			quarryTime = Time.time;
 			
+			// If this is the first time we're seeing our target...
 			if (!quarryVisible) {
+				// We see a quarry!
 				quarryVisible = true;
+				// Let's go!
 				StateChase();
 			}
 			
 			// Update the pathfinder
 			aiPath.SetQuarry(closestPlayer);
-			
-
-			// Establish direction of closest player 
+	
+			// Establish direction of closest player and look in that direction
 			lookTargetDirection = closestPlayer.transform.position - transform.position;
 		
 		
@@ -248,28 +277,26 @@ public class AlienBrain : MonoBehaviour {
 	
 	
 	
-	
-	List<GameObject> CanSeePlayers () {
-		
+	// Function for fetching a list of all visible players
+	List<GameObject> CanSeePlayers () 
+	{
 		
 		List<GameObject> visiblePlayers = new List<GameObject>();
 		
-
-
 		foreach (GameObject player in players) {
 			
-			if (player != null) {
+			if (player != null) 
+			{
 
-		
-		
 				RaycastHit hit;
 				Vector3 rayDirection = new Vector3(player.transform.position.x, .5f, player.transform.position.z) - new Vector3(head.transform.position.x, head.transform.position.y, head.transform.position.z);
 		
-				//Debug.DrawRay(head.transform.position, rayDirection, Color.yellow);
-		
-				if (Vector3.Angle(rayDirection, head.transform.forward) < halfFOV) {
-					if (Physics.Raycast(head.transform.position, rayDirection, out hit)) {
-						if (hit.transform.tag == "Player") {
+				if (Vector3.Angle(rayDirection, head.transform.forward) < halfFOV) 
+				{
+					if (Physics.Raycast(head.transform.position, rayDirection, out hit)) 
+					{
+						if (hit.transform.tag == "Player") 
+						{
 							quarryDirection = rayDirection;
 							visiblePlayers.Add(player);
 						} 

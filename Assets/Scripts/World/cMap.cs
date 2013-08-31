@@ -53,6 +53,8 @@ public class CMap : MonoBehaviour
 	public GameObject pfbEnemy;
 	
 	public bool discoveryMode = true; // Is the entire map covered in hiders or not?
+	public bool generateEnemies = false; // Generate enemies?
+	
 	
 	public int level, levelWidth, levelHeight;
 	int[,] tunnelMap;
@@ -94,7 +96,7 @@ public class CMap : MonoBehaviour
 	{
 		GenerateMap(level);
 		DrawMap();
-		GenerateEnemies(); // Make some enemies!
+		if (generateEnemies) GenerateEnemies(); // Make some enemies!
 	}
 	
 	

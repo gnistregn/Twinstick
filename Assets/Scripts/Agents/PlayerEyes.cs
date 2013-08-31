@@ -116,7 +116,7 @@ public class PlayerEyes : MonoBehaviour {
 					
 					RaycastHit hit;
 					float thingAngle = Vector3.Angle(Vector3.Scale(rayDirection, new Vector3(1,0,1)), Vector3.Scale(head.forward, new Vector3(1,0,1)));
-					
+					float thingDist = 999;
 					// If the thing is within our field of view...
 					if (thingAngle < halfFOV) {
 						// Throw a ray towards the thing
@@ -129,14 +129,7 @@ public class PlayerEyes : MonoBehaviour {
 							
 							Debug.DrawRay(head.position, hit.point - head.position, Color.cyan);
 							
-							float thingDist = Vector3.Distance(head.position, hit.point);
-							
-							// Is it something we can interact with?
-							if (thing.GetComponent<Interactible>() != null && thingDist < closestInteractibleDist) {
-								closestInteractibleAngle = thingAngle;
-								closestInteractibleThing = thing;
-								closestInteractibleDist = thingDist;
-							}
+							thingDist = Vector3.Distance(head.position, hit.point);
 							
 						} else {
 							thingSeen = false;
@@ -144,6 +137,20 @@ public class PlayerEyes : MonoBehaviour {
 					} else {
 						thingSeen = false;
 					}
+					
+					
+					
+					if (thingSeen) {
+						// Is it something we can interact with?
+						if (thing.GetComponent<Interactible>() != null && (thingDist < closestInteractibleDist || thingDist < PlayerControl.interactionReach)) {
+							closestInteractibleAngle = thingAngle;
+							closestInteractibleThing = thing;
+							closestInteractibleDist = thingDist;
+						}
+						
+					}
+					
+					
 					
 					
 					// If the thing we're looking for is tagged as an enemy

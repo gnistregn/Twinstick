@@ -33,7 +33,7 @@ public class DoorControl : MonoBehaviour {
 
 	public void Open () 
 	{	
-		Debug.Log("Open");
+		Debug.Log("Open door");
 		refreshState = true;
 		spr.spring = 0.5f;
 		spr.damper = 0.05f;
@@ -44,7 +44,7 @@ public class DoorControl : MonoBehaviour {
 	
 	public void Close () 
 	{
-		Debug.Log("Close");
+		Debug.Log("Close door");
 		refreshState = true;
 		spr.spring = 0.5f;
 		spr.damper = 0.05f;

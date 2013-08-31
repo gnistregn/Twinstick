@@ -12,6 +12,8 @@ public class PlayerControl : MonoBehaviour {
 
 
 
+	public const float interactionReach = 1f; // How far can we reach to interact with something?
+
 	
 	CharacterController controller;
 
@@ -20,7 +22,7 @@ public class PlayerControl : MonoBehaviour {
 	
 	public bool debug = true;
 
-	public float interactionReach = 1f;
+	
 
 
 	public Transform torso;
@@ -50,6 +52,8 @@ public class PlayerControl : MonoBehaviour {
 	
 		
 	}
+	
+	
 	
 	
 	void FixedUpdate () {

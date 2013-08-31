@@ -47,10 +47,14 @@ public class CMap : MonoBehaviour
 	
 	public GameObject pfbDoorway;
 	public GameObject pfbDoor;
+	public GameObject pfbPlayerUI;
+	
 	
 	
 	public GameObject pfbHider;	// Prefab for black hider block
 	public GameObject pfbEnemy;
+	public GameObject pfbPlayer;
+	
 	
 	public bool discoveryMode = true; // Is the entire map covered in hiders or not?
 	public bool generateEnemies = false; // Generate enemies?
@@ -89,6 +93,11 @@ public class CMap : MonoBehaviour
 			gameMaster = go.GetComponent<GameMaster>();
 			level = gameMaster.currentLevel;
 			NewLevel();
+			
+			
+			
+			
+			
 		}
 	}
 	
@@ -97,9 +106,45 @@ public class CMap : MonoBehaviour
 		GenerateMap(level);
 		DrawMap();
 		if (generateEnemies) GenerateEnemies(); // Make some enemies!
+		GeneratePlayers();
 	}
 	
 	
+	
+	private void GeneratePlayers () 
+	{
+		
+		int playerCount = gameMaster.playerCount;
+		
+		for (int i = 0; i < playerCount; i++) {
+			
+			// Create player object
+			GameObject p = Instantiate(pfbPlayer, new Vector3(scx1, 0, scy1), Quaternion.identity) as GameObject;
+			
+			// Name it properly
+			p.name = "Player " + (i + 1);
+			
+			// Tell this gameObject which class instance contains all data
+			p.SendMessage("SetPlayer", gameMaster.GetPlayer(i));
+			
+			GameObject panel = GameObject.Find("Main Panel");
+			GameObject ui = Instantiate(pfbPlayerUI, new Vector3(0,0,0), Quaternion.identity) as GameObject;
+			ui.transform.parent = panel.transform;
+			ui.transform.localScale = new Vector3(1,1,1);
+			ui.transform.localPosition = new Vector3(i * 300,0,0);
+			ui.name = "Info for Player " + (i + 1);
+			
+			// Find the camera
+			GameObject cameraRig = GameObject.Find("Camera Rig");
+			
+			// Tell the camera to watch this player too
+			if (cameraRig != null) cameraRig.SendMessage("AddTarget", p.transform);
+			
+		}
+		
+		
+		
+	}
 	
 	
 	
@@ -687,7 +732,7 @@ public class CMap : MonoBehaviour
 		pathMap[in_x, in_y] = 1;
 		lastPathWeight = 1;
 		
-		GameObject.Find("Player 1").transform.position = new Vector3(scx1, 0, scy1); // Set player start position
+
 		
 
 	}

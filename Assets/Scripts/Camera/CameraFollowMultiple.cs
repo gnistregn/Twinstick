@@ -13,10 +13,7 @@ public class CameraFollowMultiple : MonoBehaviour {
 		targets.Add(t);
 	}
 	
-	// Use this for initialization
-	void Start () {
 	
-	}
 	
 	// Update is called once per frame
 	void LateUpdate () {

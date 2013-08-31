@@ -47,7 +47,6 @@ public class CMap : MonoBehaviour
 	
 	public GameObject pfbDoorway;
 	public GameObject pfbDoor;
-	public GameObject pfbPlayerUI;
 	
 	
 	
@@ -126,14 +125,7 @@ public class CMap : MonoBehaviour
 			
 			// Tell this gameObject which class instance contains all data
 			p.SendMessage("SetPlayer", gameMaster.GetPlayer(i));
-			
-			GameObject panel = GameObject.Find("Main Panel");
-			GameObject ui = Instantiate(pfbPlayerUI, new Vector3(0,0,0), Quaternion.identity) as GameObject;
-			ui.transform.parent = panel.transform;
-			ui.transform.localScale = new Vector3(1,1,1);
-			ui.transform.localPosition = new Vector3(i * 300,0,0);
-			ui.name = "Info for Player " + (i + 1);
-			
+						
 			// Find the camera
 			GameObject cameraRig = GameObject.Find("Camera Rig");
 			

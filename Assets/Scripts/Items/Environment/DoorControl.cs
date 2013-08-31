@@ -11,6 +11,8 @@ public class DoorControl : MonoBehaviour {
 	private bool refreshState = false;
 	private Bounds defaultBounds;
 	private bool open = false;
+	private float springStrength = 0f;
+	private float triggerTime = 0f;
 
 	private void Start () 
 	{
@@ -25,7 +27,6 @@ public class DoorControl : MonoBehaviour {
 			JointLimits limits = hingeJoint.limits;
 			limits.min = -160;
 			limits.max = 0;
-			//hingeJoint.limits = limits;
 		}
 		
 	}
@@ -35,40 +36,55 @@ public class DoorControl : MonoBehaviour {
 	{	
 		Debug.Log("Open door");
 		refreshState = true;
-		spr.spring = 0.5f;
-		spr.damper = 0.05f;
 		spr.targetPosition = reverseDirection ? -160 : 160;
-		hingeJoint.spring = spr;
+		open = true;
+		triggerTime = Time.time;
 		rigidbody.isKinematic = false;
+		springStrength = 0f;
 	}
 	
 	public void Close () 
 	{
 		Debug.Log("Close door");
 		refreshState = true;
-		spr.spring = 0.5f;
+		open = false;
+		springStrength = 0f;
+		triggerTime = Time.time;
+	}
+	
+	private void SetSpring (float v) {
+		spr.spring = v;
 		spr.damper = 0.05f;
-		spr.targetPosition = 0;
+		spr.targetPosition = open ? (reverseDirection ? -160 : 160) : 0;
 		hingeJoint.spring = spr;
 	}
 	
 	
 	public void Update () {
+		
+		springStrength = Mathf.Lerp(springStrength, 0.5f, (Time.time-triggerTime) / 20);
+		SetSpring(springStrength);
 		float dist = Mathf.Abs(transform.localEulerAngles.y - spr.targetPosition) * Mathf.Deg2Rad;
 		if (dist < .01f) {
 			if (refreshState) {
-				//if (spr.targetPosition == 0) open = false;
-				//else open = true;
+
 				Debug.Log("Refreshing");
 				refreshState = false;
 				AstarPath.active.UpdateGraphs (defaultBounds);
 				
-				//if (!open) rigidbody.isKinematic = true;
-
-				
 				
 			}
 		}
+	}
+	
+	void OnCollisionEnter(Collision collision) 
+	{	
+		// Smooth out collisions with players by reducing the torque to zero
+		if (collision.gameObject.tag == "Player") {
+			springStrength = 0;
+			triggerTime = Time.time;
+		}
+		
 	}
 	
 	

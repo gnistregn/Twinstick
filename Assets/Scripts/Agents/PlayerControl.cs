@@ -20,7 +20,7 @@ public class PlayerControl : MonoBehaviour {
 
 	private GameObject[] worldThings;
 	
-	public bool debug = true;
+	public bool debug = false;
 
 	
 
@@ -108,11 +108,11 @@ public class PlayerControl : MonoBehaviour {
 			// Invert inputs to your liking
 			} else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
 			{
-				
-				hA = Input.GetAxis("Horizontal A");
-				vA = Input.GetAxis("Vertical A");
-				hB = Input.GetAxis("Horizontal B");
-				vB = Input.GetAxis("Vertical B");
+
+				hA = Input.GetAxis("WinHorizontal A");
+				vA = Input.GetAxis("WinVertical A");
+				hB = Input.GetAxis("WinHorizontal B");
+				vB = Input.GetAxis("WinVertical B");
 
 				if (Input.GetAxis("Fire") > 0) {
 					gun.SendMessage("Trigger");
@@ -120,6 +120,19 @@ public class PlayerControl : MonoBehaviour {
 
 				if (Input.GetAxis("Fire") < 0) {
 					gun.SendMessage("Release");
+				}
+
+				if (Input.GetKey(KeyCode.JoystickButton0)) {
+					GameObject n = GetComponent<PlayerEyes>().closestInteractible;
+					float dist = GetComponent<PlayerEyes>().closestInteractibleDistance;
+					if (n != null) {
+						if (dist < interactionReach) {
+							n.SendMessage("Interact");
+						} else {
+							print ("Too far away from " + n.name);
+						}
+					}
+					
 				}
 				
 			}
@@ -150,7 +163,7 @@ public class PlayerControl : MonoBehaviour {
 		bodyDirection = Vector3.RotateTowards(bodyDirection, bodyTargetDirection, 10f * Time.deltaTime, 1000);
 
 		// Move speed
-		float moveSpeed = targetDirection.magnitude * 1;
+		float moveSpeed = targetDirection.magnitude * 2f;
 
 		// Move slower when aiming backwards
 		if (Vector3.Dot(bodyDirection, aimDirection) < 0) {

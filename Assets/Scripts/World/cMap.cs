@@ -3,7 +3,7 @@ using System.Collections;
 using Pathfinding;
 
 
-public class CMap : MonoBehaviour
+public class cMap : MonoBehaviour
 {
 	public const byte FLOOR_CORRIDOR			= 1;
 	public const byte FLOOR_CUBICLE			= 2;

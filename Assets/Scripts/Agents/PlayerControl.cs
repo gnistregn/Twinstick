@@ -82,21 +82,45 @@ public class PlayerControl : MonoBehaviour {
 
 
 		} else {
-			
+
 			// OSX + Xbox controls
-			hA = Input.GetAxis("Horizontal A");
-			vA = Input.GetAxis("Vertical A");
-			hB = Input.GetAxis("Horizontal B");
-			vB = Input.GetAxis("Vertical B");
-			
-			if (Input.GetAxis("Fire") > 0) {
-				gun.SendMessage("Trigger");
+			if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer) 
+			{
+
+				hA = Input.GetAxis("Horizontal A");
+				vA = Input.GetAxis("Vertical A");
+				hB = Input.GetAxis("Horizontal B");
+				vB = Input.GetAxis("Vertical B");
+
+				if (Input.GetAxis("Fire") > 0) {
+					gun.SendMessage("Trigger");
+				}
+
+				if (Input.GetAxis("Fire") < 0) {
+					gun.SendMessage("Release");
+				}
+				
+			// Windows + Xbox controls
+			// Invert inputs to your liking
+			} else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+			{
+				
+				hA = Input.GetAxis("Horizontal A");
+				vA = Input.GetAxis("Vertical A");
+				hB = Input.GetAxis("Horizontal B");
+				vB = Input.GetAxis("Vertical B");
+
+				if (Input.GetAxis("Fire") > 0) {
+					gun.SendMessage("Trigger");
+				}
+
+				if (Input.GetAxis("Fire") < 0) {
+					gun.SendMessage("Release");
+				}
+				
 			}
 
 
-			if (Input.GetAxis("Fire") < 0) {
-				gun.SendMessage("Release");
-			}
 			
 		
 			

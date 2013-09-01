@@ -51,12 +51,9 @@ public class CMap : MonoBehaviour
 	
 	
 	public GameObject pfbHider;	// Prefab for black hider block
-	public GameObject pfbEnemy;
-	public GameObject pfbPlayer;
 	
 	
 	public bool discoveryMode = true; // Is the entire map covered in hiders or not?
-	public bool generateEnemies = false; // Generate enemies?
 	
 	
 	public int level, levelWidth, levelHeight;
@@ -92,64 +89,21 @@ public class CMap : MonoBehaviour
 			gameMaster = go.GetComponent<GameMaster>();
 			level = gameMaster.currentLevel;
 			NewLevel();
-			
-			
-			
-			
-			
 		}
 	}
+
+
+
 	
 	public void NewLevel()
 	{
 		GenerateMap(level);
 		DrawMap();
-		if (generateEnemies) GenerateEnemies(); // Make some enemies!
-		GeneratePlayers();
 	}
 	
 	
 	
-	private void GeneratePlayers () 
-	{
-		
-		int playerCount = gameMaster.playerCount;
-		
-		for (int i = 0; i < playerCount; i++) {
-			
-			// Create player object
-			GameObject p = Instantiate(pfbPlayer, new Vector3(scx1, 0, scy1), Quaternion.identity) as GameObject;
-			
-			// Name it properly
-			p.name = "Player " + (i + 1);
-			
-			// Tell this gameObject which class instance contains all data
-			p.SendMessage("SetPlayer", gameMaster.GetPlayer(i));
-						
-			// Find the camera
-			GameObject cameraRig = GameObject.Find("Camera Rig");
-			
-			// Tell the camera to watch this player too
-			if (cameraRig != null) cameraRig.SendMessage("AddTarget", p.transform);
-			
-		}
-		
-		
-		
-	}
-	
-	
-	
-	private void GenerateEnemies () 
-	{
-		for (int i = 0; i < 10; i++) 
-		{
-			Vector3 enemyStartPoint = GetRandomSquareOfType(CMap.FLOOR_CORRIDOR); // Enemy starts in a random piece of corridor
-			GameObject e = Instantiate(pfbEnemy, enemyStartPoint, Quaternion.AngleAxis(Random.Range(0,360), Vector3.up)) as GameObject;
-			e.name = "Enemy " + i;
-		}
-	}
-	
+
 	
 	
 	
@@ -970,6 +924,10 @@ public class CMap : MonoBehaviour
 		
 	}
 	
+	
+	public Vector3 GetStartPosition () {
+		return new Vector3(scx1, 0, scy1);
+	}
 	
 	public Vector3 GetRandomSquareOfType (byte type) 
 	{

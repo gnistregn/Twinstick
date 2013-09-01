@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GameMaster : MonoBehaviour {
 
 	public int currentLevel = 1;
-	public int playerCount = 2;
+	public int playerCount = 1;
 
 	private List<Player> players;
 

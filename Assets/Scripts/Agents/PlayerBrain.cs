@@ -47,7 +47,7 @@ public class PlayerBrain : MonoBehaviour {
 	
 	
 	
-	public void TakeDamage (int amount) {
+	public void Damage (int amount) {
 		
 		hitPoints -= amount;
 		if (hitPoints < 0) {

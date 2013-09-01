@@ -99,6 +99,7 @@ public class CMap : MonoBehaviour
 	{
 		GenerateMap(level);
 		DrawMap();
+		gameObject.SendMessage("MapFinished");
 	}
 	
 	

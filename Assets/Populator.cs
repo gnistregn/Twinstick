@@ -16,17 +16,21 @@ public class Populator : MonoBehaviour {
 	private CMap map;
 	private GameMaster gameMaster;
 	
-	void Start () {
+	void Awake () {
 		
 		GameObject go = GameObject.Find("Game Master");
 		if (go != null) gameMaster = go.GetComponent<GameMaster>();
-		
 		map = GetComponent<CMap>();
 		
+	}
+
+
+	
+	public void MapFinished () {
+		
 		if (generateEnemies) GenerateEnemies(); // Make some enemies!
-		
+	
 		GeneratePlayers();
-		
 		
 	}
 	

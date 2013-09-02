@@ -6,7 +6,7 @@ public class cWorldStats : MonoBehaviour
 
 	public UILabel statusLabel;		// element for updating world GUI values
 	public UILabel nextFloorLabel;
-	private CMap MAP;
+	private cMap MAP;
 	private bool countExploredFloors = false;
 	private int tempCount = 0;
 
@@ -18,7 +18,7 @@ public class cWorldStats : MonoBehaviour
 	
 	void Start()
 	{
-		MAP = (CMap)GetComponent("CMap");
+		MAP = (cMap)GetComponent("cMap");
 		
 		GameObject go = GameObject.Find("Game Master");
 		if (go != null) gameMaster = go.GetComponent<GameMaster>();
@@ -31,13 +31,16 @@ public class cWorldStats : MonoBehaviour
 		UpdateWorldLabel();
 		UpdateNextFloorLabel();
 		
-		if (MAP.level < 100)
+		if (MAP)
 		{
-			oldDummyCheck = dummyCheck;
-			dummyCheck = Input.GetKeyDown(KeyCode.Space);
-			if ((!dummyCheck) && (oldDummyCheck))
-				if (AreAllPlayersInEndArea())
-					DummyNextLevel();
+			if (MAP.level < 100)
+			{
+				oldDummyCheck = dummyCheck;
+				dummyCheck = Input.GetKeyDown(KeyCode.Space);
+				if ((!dummyCheck) && (oldDummyCheck))
+					if (AreAllPlayersInEndArea())
+						DummyNextLevel();
+			}
 		}
 	}
 	
@@ -77,6 +80,7 @@ public class cWorldStats : MonoBehaviour
 	
 	void UpdateWorldLabel()
 	{
+		if (!MAP)	return;
 		string perc = "";
 		if (MAP.statsFloorCount > 0)	perc = "("+((MAP.statsFloorExploredCount*100)/MAP.statsFloorCount).ToString()+"%) ";
 		if (statusLabel != null) statusLabel.text = MAP.level.ToString()+"/100"+"\n"+perc+MAP.statsFloorExploredCount.ToString()+"/"+MAP.statsFloorCount.ToString()+"\n"+MAP.statsSecretExploredCount.ToString()+"/"+MAP.statsSecretCount.ToString();

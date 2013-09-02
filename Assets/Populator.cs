@@ -13,14 +13,14 @@ public class Populator : MonoBehaviour {
 	public GameObject pfbPlayer;
 	public GameObject pfbEnemy;
 	
-	private CMap map;
+	private cMap map;
 	private GameMaster gameMaster;
 	
 	void Awake () {
 		
 		GameObject go = GameObject.Find("Game Master");
 		if (go != null) gameMaster = go.GetComponent<GameMaster>();
-		map = GetComponent<CMap>();
+		map = GetComponent<cMap>();
 		
 	}
 
@@ -71,7 +71,7 @@ public class Populator : MonoBehaviour {
 	{
 		for (int i = 0; i < 10; i++) 
 		{
-			Vector3 enemyStartPoint = map.GetRandomSquareOfType(CMap.FLOOR_CORRIDOR); // Enemy starts in a random piece of corridor
+			Vector3 enemyStartPoint = map.GetRandomSquareOfType(cMap.FLOOR_CORRIDOR); // Enemy starts in a random piece of corridor
 			GameObject e = Instantiate(pfbEnemy, enemyStartPoint, Quaternion.AngleAxis(Random.Range(0,360), Vector3.up)) as GameObject;
 			e.name = "Enemy " + i;
 		}

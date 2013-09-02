@@ -33,7 +33,7 @@ public class AlienBrain : MonoBehaviour {
 	private AIPath aiPath;
 	private CharacterController controller;
 	private Vector3 targetPosition;
-	private CMap map;
+	private cMap map;
 	
 
 
@@ -43,7 +43,7 @@ public class AlienBrain : MonoBehaviour {
 		
 		// Gain knowledge of the world
 		GameObject go = GameObject.Find("World");
-		if (go != null) map = go.GetComponent<CMap>() as CMap;
+		if (go != null) map = go.GetComponent<cMap>() as cMap;
 
 		// We'll need to call these pathfinding and movement-related components
 		seeker = GetComponent<Seeker>();

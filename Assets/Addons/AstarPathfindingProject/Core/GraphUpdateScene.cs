@@ -67,6 +67,7 @@ public class GraphUpdateScene : MonoBehaviour {
 	 */
 	public void Apply () {
 		
+
 		if (AstarPath.active == null) {
 			Debug.LogError ("There is no AstarPath object in the scene");
 			return;
@@ -89,6 +90,8 @@ public class GraphUpdateScene : MonoBehaviour {
 		guo.modifyTag = modifyTag;
 		guo.setTag = setTag;
 #endif
+
+		Debug.Log("Applying: " + guo.shape + " " + setWalkability + " " + modifyWalkability);
 		
 		AstarPath.active.UpdateGraphs (guo);
 	}

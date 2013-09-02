@@ -46,6 +46,7 @@ public class AIPath : MonoBehaviour {
 	 */
 	public Transform target;
 	public Vector3 targetVector;
+	private bool doorCheckCleared = true;
 	
 	/** Enables or disables searching for paths.
 	 * Setting this to false does not stop any active path requests from being calculated or stop it from continuing to follow the current path.
@@ -60,7 +61,7 @@ public class AIPath : MonoBehaviour {
 	/** Maximum velocity.
 	 * This is the maximum speed in world units per second.
 	 */
-	private float speed = 1;
+	private float speed = .15f;
 	
 	/** Rotation speed.
 	 * Rotation is calculated using Quaternion.SLerp. This variable represents the damping, the higher, the faster it will be able to rotate.
@@ -159,6 +160,7 @@ public class AIPath : MonoBehaviour {
 	}
 	
 	public void ClearQuarry () {
+		if (target != null) targetVector = target.transform.position;
 		target = null;
 	}
 	
@@ -353,6 +355,46 @@ public class AIPath : MonoBehaviour {
 		
 		while (true) {
 			if (currentWaypointIndex < vPath.Length-1) {
+				
+				
+				
+				// Check if the next waypoint is on the other side of a door
+				int startIndex = currentWaypointIndex - 1;
+				if (startIndex < 1) startIndex = 1;
+				Vector3 currentWP = vPath[startIndex]; // Current node
+				Vector3 nextWP = vPath[currentWaypointIndex]; // Next node
+				RaycastHit hit;
+
+				// Draw debug ray a little bit above the path trace
+				Debug.DrawRay(currentWP + new Vector3(0,.1f,0), nextWP - currentWP, Color.red);
+				
+				// If there's something between current waypoint and the next one...
+				if (Physics.Raycast(currentWP, nextWP - currentWP, out hit, .2f)) {
+					
+					// ... and if it's a door and I'm cleared to check doors...
+					if (hit.collider.gameObject.tag == "Door" && doorCheckCleared) {
+					
+						// ... i'm not allowed to check any more doors until i've moved beyond this door
+						doorCheckCleared = false;
+					
+						// Try unlocking the door
+						hit.collider.gameObject.SendMessage("CheckLockState");
+						Debug.Log("Inspecting lock...");
+						
+					}
+					
+				// If there's nothing in front of me...
+				} else {
+					
+					// I'm allowed to check doors again
+					doorCheckCleared = true;
+					
+				}
+					
+					
+					
+					
+				
 				//There is a "next path segment"
 				float dist = XZSqrMagnitude (vPath[currentWaypointIndex], currentPosition);
 					//Mathfx.DistancePointSegmentStrict (vPath[currentWaypointIndex+1],vPath[currentWaypointIndex+2],currentPosition);

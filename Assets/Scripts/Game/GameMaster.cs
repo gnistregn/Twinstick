@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GameMaster : MonoBehaviour {
 
 	public int currentLevel = 1;
+	public string currentCorpName = "";
 	public int playerCount = 1;
 
 	private List<Player> players;
@@ -22,6 +23,8 @@ public class GameMaster : MonoBehaviour {
 			players.Add(p);
 		}
 		
+		currentCorpName = NameGenerator.GenerateCorpName();
+		
 	}
 	
 	
@@ -32,6 +35,7 @@ public class GameMaster : MonoBehaviour {
 	
 	public void GoUpLevel () {
 		if (currentLevel < 100) currentLevel++;
+		currentCorpName = NameGenerator.GenerateCorpName();
 		Application.LoadLevel("Newlevel");
 	}
 	

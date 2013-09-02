@@ -1,34 +1,43 @@
-using UnityEngine;
+using UnityEngine;using UnityEngine;
 using System.Collections;
 using Pathfinding;
 
 public class SlidingDoorControl : MonoBehaviour {
 
 	
+	// Settings
+	public bool locked = false;
 	public bool reverseDirection = false;
 	public float speed = 1f;
-	private Bounds defaultBounds;
-	private bool refreshState = false;
+	
+	// Animation
 	private float triggerTime = 0f;
-	private float slideDistance = .55f;
+	private float slideDistance = .65f;
 	private float slideTarget = 0f;
 	private float slideStart = 0f;
 	private float slidePos = 0f;
 	private float startPos;
+
+	// Pathfinding
+	public GameObject doorblock; // Dummy item to block pathfinders
+	private Bounds defaultBounds;
+	private bool refreshState = false;
 	
 	private void Start () 
 	{
 		
+		
 		startPos = transform.localPosition.x;
 
-
 		defaultBounds = collider.bounds;
-		defaultBounds.size *= 1.2f;
+		defaultBounds.size *= 2f;
 		
 		if (reverseDirection) 
 		{
 	
 		}
+		
+		refreshState = true;
 		
 	}
 	
@@ -39,6 +48,7 @@ public class SlidingDoorControl : MonoBehaviour {
 		refreshState = true;
 		slideTarget = reverseDirection ? -slideDistance : slideDistance;
 		triggerTime = Time.time;
+		ClearLockState();
 	}
 	
 	public void Close () 
@@ -49,6 +59,28 @@ public class SlidingDoorControl : MonoBehaviour {
 		triggerTime = Time.time;
 	}
 	
+	public void EnemyUsable (bool n) {
+
+		doorblock.SetActive(!n);
+		AstarPath.active.UpdateGraphs (defaultBounds);
+		
+	}
+	
+	public void CheckLockState () {
+		
+		if (locked) {
+			EnemyUsable(false);
+		} else {
+			Open();
+		}
+		
+	}
+	
+	public void ClearLockState () {
+		Debug.Log("Clearing lock state");
+		EnemyUsable(true);
+		
+	}
 	
 	
 	public void Update () {
@@ -63,6 +95,7 @@ public class SlidingDoorControl : MonoBehaviour {
 				Debug.Log("Refreshing");
 				refreshState = false;
 				AstarPath.active.UpdateGraphs (defaultBounds);
+			
 			}
 		}
 	}
